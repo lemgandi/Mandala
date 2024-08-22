@@ -21,7 +21,7 @@ compile: $(GAME).pdx
 dist:
 	zip -r ${GAME}.zip ${GAME}.pdx/*
 
-$(GAME).pdx : Source/main.lua Source/cells.lua Source/cell.lua Source/pdxinfo 
+$(GAME).pdx : Source/main.lua 
 	"$(SDKBIN)/pdc" '-k' 'Source' '$(GAME).pdx'
 
 open:
