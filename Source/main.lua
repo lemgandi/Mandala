@@ -8,26 +8,27 @@
 
 import "CoreLibs/graphics"
 import "CoreLibs/sprites"
+import "CoreLibs/crank"
+import "CoreLibs/strict"
 
 gfx = playdate.graphics
 
 MandalaGFX = {}
 MandalaGFX["Star"] = {gfx.image.new("Images/Star.png")}
 MandalaGFX["Spiral"] = {gfx.image.new("Images/Spiral.png")}
-
-
+MandalaGFX["Line"] = {gfx.image.new("Images/Line.png")}
+local currentRotation = 0
 function setupMandala()
-   print(type(MandalaGFX))
+
    for kk,vv in pairs(MandalaGFX)
-   do     
+   do
       table.insert(vv,gfx.sprite.new(vv[1]))
    end
    
---   MandalaGFX["Star"][1]:draw(0,0)
-   MandalaGFX["Star"][2]:moveTo(100,100)
-   MandalaGFX["Star"][2]:add()
-   MandalaGFX["Star"][2]:setRotation(5)
-   print("Visible:",MandalaGFX["Star"][2]:isVisible())
+   MandalaGFX["Spiral"][1]:draw(0,0)
+   MandalaGFX["Line"][2]:moveTo(200,120)
+   MandalaGFX["Line"][2]:add()
+
 end
 -- Main Line starts Here
 
@@ -35,5 +36,13 @@ setupMandala()
 
 function playdate.update()
    do
+      local crankTicks=playdate.getCrankTicks(180)
+
+      if crankTicks ~= 0 then
+	 currentRotation = currentRotation + crankTicks	 
+	 MandalaGFX["Line"][2]:setRotation(currentRotation)
+      end
+      
+      gfx.sprite.update()
    end   
 end
