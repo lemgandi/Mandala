@@ -17,7 +17,9 @@ MandalaGFX = {}
 MandalaGFX["Star"] = {gfx.image.new("Images/Star.png")}
 MandalaGFX["Spiral"] = {gfx.image.new("Images/Spiral.png")}
 MandalaGFX["Line"] = {gfx.image.new("Images/Line.png")}
+
 local currentRotation = 0
+
 function setupMandala()
 
    for kk,vv in pairs(MandalaGFX)
@@ -25,9 +27,10 @@ function setupMandala()
       table.insert(vv,gfx.sprite.new(vv[1]))
    end
    
-   MandalaGFX["Spiral"][1]:draw(0,0)
-   MandalaGFX["Line"][2]:moveTo(200,120)
-   MandalaGFX["Line"][2]:add()
+   MandalaGFX["Spiral"][2]:moveTo(200,120)
+   MandalaGFX["Spiral"][2]:add()
+
+   gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
 end
 -- Main Line starts Here
@@ -40,9 +43,10 @@ function playdate.update()
 
       if crankTicks ~= 0 then
 	 currentRotation = currentRotation + crankTicks	 
-	 MandalaGFX["Line"][2]:setRotation(currentRotation)
-      end
-      
+	 MandalaGFX["Spiral"][2]:setRotation(currentRotation)
+      end      
       gfx.sprite.update()
+      MandalaGFX["Spiral"][1]:draw(0,0)
+
    end   
 end
