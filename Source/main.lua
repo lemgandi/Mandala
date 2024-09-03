@@ -26,12 +26,13 @@ function setupMandala()
    do
       table.insert(vv,gfx.sprite.new(vv[1]))
    end
-   
-   MandalaGFX["Spiral"][2]:moveTo(200,120)
-   MandalaGFX["Spiral"][2]:add()
+   -- MandalaGFX["Line"][2]:setCenter(0.5,0.429)
+   MandalaGFX["Line"][2]:moveTo(200,120)
+   MandalaGFX["Line"][2]:add()
 
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
+   
 end
 -- Main Line starts Here
 
@@ -43,10 +44,14 @@ function playdate.update()
 
       if crankTicks ~= 0 then
 	 currentRotation = currentRotation + crankTicks	 
-	 MandalaGFX["Spiral"][2]:setRotation(currentRotation)
+	 MandalaGFX["Line"][2]:setRotation(currentRotation,1,2)
       end      
       gfx.sprite.update()
-      MandalaGFX["Spiral"][1]:draw(0,0)
-
+      MandalaGFX["Line"][1]:draw(0,0)
+      local cx,cy = MandalaGFX["Line"][2]:getCenterPoint():unpack()
+      cx = cx*400
+      cy = cy*240
+--      print("cx:",cx,"cy:",cy) cx:200 cy:120
+      gfx.drawCircleAtPoint(cx,cy,5)
    end   
 end
