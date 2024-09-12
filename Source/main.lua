@@ -18,7 +18,11 @@ MandalaGFX["Star"] = {gfx.image.new("Images/Star.png")}
 MandalaGFX["Spiral"] = {gfx.image.new("Images/Spiral.png")}
 MandalaGFX["Line"] = {gfx.image.new("Images/Line.png")}
 
-local currentRotation = 0
+local CurrentRotation = 0
+local ShapeName="Line"
+
+local GameState = {}
+
 
 function setupMandala()
 
@@ -26,9 +30,15 @@ function setupMandala()
    do
       table.insert(vv,gfx.sprite.new(vv[1]))
    end
-   -- MandalaGFX["Line"][2]:setCenter(0.5,0.429)
-   MandalaGFX["Line"][2]:moveTo(200,120)
-   MandalaGFX["Line"][2]:add()
+   
+   GameState["which"]="Line"
+   playdate.datastore.write(GameState)
+   
+   GameState=playdate.datastore.read()
+   ShapeName=GameState["which"]
+   
+   MandalaGFX[ShapeName][2]:moveTo(200,120)
+   MandalaGFX[ShapeName][2]:add()
 
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
@@ -43,15 +53,10 @@ function playdate.update()
       local crankTicks=playdate.getCrankTicks(180)
 
       if crankTicks ~= 0 then
-	 currentRotation = currentRotation + crankTicks	 
-	 MandalaGFX["Line"][2]:setRotation(currentRotation,1,2)
+	 CurrentRotation = CurrentRotation + crankTicks	 
+	 MandalaGFX[ShapeName][2]:setRotation(CurrentRotation,1,2)
       end      
       gfx.sprite.update()
-      MandalaGFX["Line"][1]:draw(0,0)
-      local cx,cy = MandalaGFX["Line"][2]:getCenterPoint():unpack()
-      cx = cx*400
-      cy = cy*240
---      print("cx:",cx,"cy:",cy) cx:200 cy:120
-      gfx.drawCircleAtPoint(cx,cy,5)
+      MandalaGFX[ShapeName][1]:draw(0,0)
    end   
 end
