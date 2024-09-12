@@ -31,9 +31,9 @@ function setupMandala()
       table.insert(vv,gfx.sprite.new(vv[1]))
    end
    
-   GameState["which"]="Line"
+--[[   GameState["which"]="Line"
    playdate.datastore.write(GameState)
-   
+]]
    GameState=playdate.datastore.read()
    ShapeName=GameState["which"]
    
