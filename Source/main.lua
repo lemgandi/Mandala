@@ -12,11 +12,12 @@ import "CoreLibs/crank"
 import "CoreLibs/strict"
 
 gfx = playdate.graphics
+local ImageDir="Images/shapes/"
 
 MandalaGFX = {}
-MandalaGFX["Star"] = {gfx.image.new("Images/Star.png")}
-MandalaGFX["Spiral"] = {gfx.image.new("Images/Spiral.png")}
-MandalaGFX["Line"] = {gfx.image.new("Images/Line.png")}
+MandalaGFX["Star"] = {gfx.image.new(ImageDir .. "Star.png")}
+MandalaGFX["Spiral"] = {gfx.image.new(ImageDir .. "Spiral.png")}
+MandalaGFX["Line"] = {gfx.image.new(ImageDir .. "Line.png")}
 
 local CurrentRotation = 0
 local ShapeName="Line"
