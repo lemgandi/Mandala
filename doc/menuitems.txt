@@ -1,0 +1,26 @@
+Mandala Menu Behavior Options
+Charles Shapiro
+13 Sep 2024
+
+Top Object
+   Star
+   Line
+   Spiral
+   Etc
+
+Bottom Object
+   Star
+   Line
+   Spiral
+   Etc ( default: Top Object)
+
+Shadow  ( top object casts a shadow?)
+
+Offset ( top object center not at center of screen )
+   offset X (default 0)
+   offset Y (default 0)
+
+
+
+
+
