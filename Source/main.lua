@@ -29,7 +29,9 @@ function setupMandala()
 
    for kk,vv in pairs(MandalaGFX)
    do
-      table.insert(vv,gfx.sprite.new(vv[1]))
+      local theSprite=gfx.sprite.new()
+      theSprite:setImage(vv[1],0,400/240)
+      table.insert(vv,theSprite)
    end
    
 --[[   GameState["which"]="Line"
@@ -55,7 +57,7 @@ function playdate.update()
 
       if crankTicks ~= 0 then
 	 CurrentRotation = CurrentRotation + crankTicks	 
-	 MandalaGFX[ShapeName][2]:setRotation(CurrentRotation,1,2)
+	 MandalaGFX[ShapeName][2]:setRotation(CurrentRotation,400/240)
       end      
       gfx.sprite.update()
       MandalaGFX[ShapeName][1]:draw(0,0)
