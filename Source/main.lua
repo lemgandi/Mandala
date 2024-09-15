@@ -3,6 +3,18 @@
    A mandala viewer for the PlayDate game console. Mainly an excuse to experiment with sprites.
 
    copyright(c) Charles Shapiro August 2024
+   
+    This file is part of Mandala.
+    Mandala is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Mandala is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Mandala.  If not, see <http://www.gnu.org/licenses/>.
 
 --]]
 
@@ -10,14 +22,12 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/crank"
 import "CoreLibs/strict"
+import "makeGFXTable"
 
 gfx = playdate.graphics
-local ImageDir="Images/shapes/"
+ImageDir="Images/shapes/"
 
 MandalaGFX = {}
-MandalaGFX["Star"] = {gfx.image.new(ImageDir .. "Star.png")}
-MandalaGFX["Spiral"] = {gfx.image.new(ImageDir .. "Spiral.png")}
-MandalaGFX["Line"] = {gfx.image.new(ImageDir .. "Line.png")}
 
 local CurrentRotation = 0
 local ShapeName="Line"
@@ -27,16 +37,19 @@ local GameState = {}
 
 function setupMandala()
 
+   MandalaGFX=makeGFXTable(ImageDir)
+--[[   
    for kk,vv in pairs(MandalaGFX)
    do
       local theSprite=gfx.sprite.new()
       theSprite:setImage(vv[1],0,400/240)
       table.insert(vv,theSprite)
    end
-   
+]]   
 --[[   GameState["which"]="Line"
    playdate.datastore.write(GameState)
 ]]
+   
    GameState=playdate.datastore.read()
    ShapeName=GameState["which"]
    
