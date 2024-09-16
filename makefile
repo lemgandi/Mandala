@@ -6,6 +6,7 @@
 SDK = $(PLAYDATE_SDK_PATH)
 SDKBIN=$(SDK)/bin
 GAME=$(notdir $(CURDIR))
+CONFIG=$(SDK)/Disk/Data/org.tomshiro.mandala
 SIM=PlaydateSimulator
 
 
@@ -15,6 +16,7 @@ run: open
 
 clean:
 	rm -rf '$(GAME).pdx'
+	rm -rf $(CONFIG)
 
 compile: $(GAME).pdx
 

@@ -32,25 +32,20 @@ MandalaGFX = {}
 local CurrentRotation = 0
 local ShapeName="Line"
 
-local GameState = {}
+local GameState
 
 
 function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
---[[   
-   for kk,vv in pairs(MandalaGFX)
-   do
-      local theSprite=gfx.sprite.new()
-      theSprite:setImage(vv[1],0,400/240)
-      table.insert(vv,theSprite)
-   end
-]]   
---[[   GameState["which"]="Line"
-   playdate.datastore.write(GameState)
-]]
    
    GameState=playdate.datastore.read()
+   if nil == GameState then
+      GameState={}
+      GameState["which"]="Line"
+      playdate.datastore.write(GameState)
+   end
+   
    ShapeName=GameState["which"]
    
    MandalaGFX[ShapeName][2]:moveTo(200,120)
