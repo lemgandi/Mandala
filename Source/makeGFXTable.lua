@@ -19,6 +19,7 @@
 
 
 import "CoreLibs/string"
+import "CoreLibs/strict"
 
 function makeGFXTable(tableDir)
    local fileList=playdate.file.listFiles(tableDir)

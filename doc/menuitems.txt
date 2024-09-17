@@ -2,25 +2,15 @@ Mandala Menu Behavior Options
 Charles Shapiro
 13 Sep 2024
 
-Top Object
-   Star
-   Line
-   Spiral
-   Etc
+Top Object ( file system
 
-Bottom Object
-   Star
-   Line
-   Spiral
-   Etc ( default: Top Object)
+Bottom Object ( file system )
 
 Shadow  ( top object casts a shadow?)
 
-Offset ( top object center not at center of screen )
-   offset X (default 0)
-   offset Y (default 0)
+Top Offset ( top object center not at center of screen ) ( graphic? )
 
-
+Bottom Offset ( bottom object center not at center of screen ) ( graphic ? )
 
 
 

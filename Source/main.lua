@@ -22,7 +22,9 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/crank"
 import "CoreLibs/strict"
+
 import "makeGFXTable"
+import "editConfiguration"
 
 gfx = playdate.graphics
 ImageDir="Images/shapes/"
@@ -31,19 +33,25 @@ MandalaGFX = {}
 
 local CurrentRotation = 0
 local ShapeName="Line"
+EditingConfig=false
 
 local GameState
-
+local debugPrinted=false
 
 function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
    
+
    GameState=playdate.datastore.read()
+   print("GameState:",GameState)
+
    if nil == GameState then
       GameState={}
       GameState["which"]="Line"
       playdate.datastore.write(GameState)
+      editConfiguration(GameState,MandalaGFX)      
+      EditingConfig=true
    end
    
    ShapeName=GameState["which"]
@@ -61,13 +69,24 @@ setupMandala()
 
 function playdate.update()
    do
-      local crankTicks=playdate.getCrankTicks(180)
+      if not debugPrinted then
+	 print("EditingConfig:",EditingConfig)
+	 debugPrinted=true
+      end
+      
+      if not EditingConfig then
+	 local crankTicks=playdate.getCrankTicks(180)
 
-      if crankTicks ~= 0 then
-	 CurrentRotation = CurrentRotation + crankTicks	 
-	 MandalaGFX[ShapeName][2]:setRotation(CurrentRotation,400/240)
+	 if crankTicks ~= 0 then
+	    CurrentRotation = CurrentRotation + crankTicks	 
+	    MandalaGFX[ShapeName][2]:setRotation(CurrentRotation,400/240)
+	 end      
+	 gfx.sprite.update()
+	 MandalaGFX[ShapeName][1]:draw(0,0)
+      end
+      if playdate.buttonIsPressed(playdate.kButtonA) then
+	 print("Pressed kButtonA")
+	 EditingConfig = false
       end      
-      gfx.sprite.update()
-      MandalaGFX[ShapeName][1]:draw(0,0)
    end   
 end
