@@ -33,10 +33,21 @@ MandalaGFX = {}
 
 local CurrentRotation = 0
 local ShapeName="Line"
+
+-- In global table
 EditingConfig=false
 
 local GameState
 local debugPrinted=false
+
+function runConfigEditor()
+   gfx.clear()
+   EditingConfig=true
+   editConfigurationSetup(GameState,MandalaGFX)
+   editConfiguration()
+   playdate.datastore.write(GameState)   
+end
+
 
 function setupMandala()
 
@@ -50,9 +61,12 @@ function setupMandala()
       GameState={}
       GameState["which"]="Line"
       playdate.datastore.write(GameState)
-      editConfiguration(GameState,MandalaGFX)      
+      editConfigurationSetup(GameState,MandalaGFX)      
       EditingConfig=true
    end
+   
+   local menu=playdate.getSystemMenu()
+   menu:addMenuItem("Configure",runConfigEditor)
    
    ShapeName=GameState["which"]
    
@@ -83,10 +97,9 @@ function playdate.update()
 	 end      
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeName][1]:draw(0,0)
+      else
+	 editConfiguration()
       end
-      if playdate.buttonIsPressed(playdate.kButtonA) then
-	 print("Pressed kButtonA")
-	 EditingConfig = false
-      end      
-   end   
+   end
+   
 end

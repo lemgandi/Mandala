@@ -21,22 +21,32 @@ import "CoreLibs/strict"
 
 gfx = playdate.graphics
 
-function editConfiguration(configTable,GFXTable)
+
+function editConfigurationSetup(configTable,GFXTable)
    local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
    print("myFont:",myFont)
    
-   local yLocation=0
+   local yLocation=24
    local yStep=24
    local w,h
-   
-
+   local shapeNames={}
    
    gfx.setFont(myFont)
   
    for kk in pairs(GFXTable) do
-      w,h = gfx.drawText(kk,30,yLocation)
-      print("Width:",w,"Height:",h)
+      table.insert(shapeNames,kk)
+   end
+   table.sort(shapeNames)
+   
+   for kk,vv in ipairs(shapeNames) do
+      w,h = gfx.drawText(vv,30,yLocation)
       yLocation = yLocation + yStep
    end
-         
+   
+end
+
+function editConfiguration()
+         if playdate.buttonIsPressed(playdate.kButtonB) then
+	 EditingConfig = false
+      end      
 end

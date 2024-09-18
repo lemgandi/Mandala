@@ -34,7 +34,7 @@ function makeGFXTable(tableDir)
       table.insert(retVal[fnKey],theSprite)
    end
    
---[[   for kk,vv in pairs(retVal) do      
+--[[ for kk,vv in pairs(retVal) do      
       print(kk,type(vv[1]),type(vv[2]))
    end
 ]]
