@@ -21,32 +21,80 @@ import "CoreLibs/strict"
 
 gfx = playdate.graphics
 
+local ShapeNames={}
+local CurrentOnScreenTop=1
+local YTop=24
+local XLeft=30
+local YStep=24
+local ScrollAreaLines=9
 
 function editConfigurationSetup(configTable,GFXTable)
    local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
-   print("myFont:",myFont)
    
-   local yLocation=24
-   local yStep=24
    local w,h
-   local shapeNames={}
+   local yLocation=YTop
    
    gfx.setFont(myFont)
   
    for kk in pairs(GFXTable) do
-      table.insert(shapeNames,kk)
+      table.insert(ShapeNames,kk)
    end
-   table.sort(shapeNames)
+   table.sort(ShapeNames)
    
-   for kk,vv in ipairs(shapeNames) do
-      w,h = gfx.drawText(vv,30,yLocation)
-      yLocation = yLocation + yStep
+   if #ShapeNames > ScrollAreaLines then
+      displayShapeNames(CurrentOnScreenTop,ScrollAreaLines)
+   else
+      displayShapeNames(CurrentOnScreenTop,#ShapeNames)
    end
+   
    
 end
 
-function editConfiguration()
-         if playdate.buttonIsPressed(playdate.kButtonB) then
-	 EditingConfig = false
+function clearScrollArea()
+   local scrollAreaRect=playdate.geometry.rect.new(XLeft,YTop,(playdate.display.getWidth() - XLeft),
+						   (playdate.display.getHeight() - YTop))
+
+   local currentColor=gfx.getColor()
+   
+   gfx.setColor(gfx.kColorWhite)
+   gfx.fillRect(scrollAreaRect)
+   gfx.setColor(currentColor)
+
+end
+
+-- Display shape names on screen
+function displayShapeNames(firstone,numshapes)
+   local yLocation=YTop
+
+   for key=firstone,numshapes do
+      gfx.drawText(ShapeNames[key],XLeft,yLocation)
+      yLocation=yLocation+YStep
+   end
+end
+
+function scroll(updown)
+
+   -- updown true = down, false = up
+   
+   if updown == true then
+      if #ShapeNames >= (CurrentOnScreenTop + ScrollAreaLines) then	 
+	 clearScrollArea()
+	 CurrentOnScreenTop = CurrentOnScreenTop + 1
+	 displayShapeNames(CurrentOnScreenTop,ScrollAreaLines)
       end      
+   end
+   
+						 
+end
+
+function editConfiguration()
+   
+   if playdate.buttonIsPressed(playdate.kButtonB) then
+      EditingConfig = false
+   elseif playdate.buttonIsPressed(playdate.kButtonDown) then
+      scroll(true)
+   elseif playdate.buttonIsPressed(playdate.kButtonUp) then
+      scroll(false)
+   end
+   
 end
