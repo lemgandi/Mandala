@@ -26,7 +26,7 @@ local CurrentOnScreenTop=1
 local YTop=24
 local XLeft=30
 local YStep=24
-local ScrollAreaLines=9
+local ScrollAreaLines=8
 
 function editConfigurationSetup(configTable,GFXTable)
    local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
@@ -35,12 +35,16 @@ function editConfigurationSetup(configTable,GFXTable)
    local yLocation=YTop
    
    gfx.setFont(myFont)
-  
-   for kk in pairs(GFXTable) do
-      table.insert(ShapeNames,kk)
-   end
-   table.sort(ShapeNames)
    
+   if 0 == #ShapeNames then
+      for kk in pairs(GFXTable) do
+	 table.insert(ShapeNames,kk)
+      end
+      table.sort(ShapeNames)
+   end
+   
+   
+   CurrentOnScreenTop=1
    if #ShapeNames > ScrollAreaLines then
       displayShapeNames(CurrentOnScreenTop,ScrollAreaLines)
    else
@@ -75,15 +79,23 @@ end
 function scroll(updown)
 
    -- updown true = down, false = up
-   
+   print("#ShapeNames:",#ShapeNames,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLines",ScrollAreaLines)
+
    if updown == true then
-      if #ShapeNames >= (CurrentOnScreenTop + ScrollAreaLines) then	 
+      
+      if #ShapeNames >= (CurrentOnScreenTop + ScrollAreaLines) then
 	 clearScrollArea()
-	 CurrentOnScreenTop = CurrentOnScreenTop + 1
-	 displayShapeNames(CurrentOnScreenTop,ScrollAreaLines)
+	 displayShapeNames(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLines)
+	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
+	 print("CurrentOnScreenTop:",CurrentOnScreenTop)
       end      
-   end
-   
+   else
+      if CurrentOnScreenTop > 1 then	    
+	 clearScrollArea()
+	 displayShapeNames(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLines)
+	 CurrentOnScreenTop = CurrentOnScreenTop - 1	 	 	 
+      end	 
+   end      
 						 
 end
 
@@ -91,9 +103,9 @@ function editConfiguration()
    
    if playdate.buttonIsPressed(playdate.kButtonB) then
       EditingConfig = false
-   elseif playdate.buttonIsPressed(playdate.kButtonDown) then
+   elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       scroll(true)
-   elseif playdate.buttonIsPressed(playdate.kButtonUp) then
+   elseif playdate.buttonJustPressed(playdate.kButtonUp) then
       scroll(false)
    end
    

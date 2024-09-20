@@ -55,7 +55,6 @@ function setupMandala()
    
 
    GameState=playdate.datastore.read()
-   print("GameState:",GameState)
 
    if nil == GameState then
       GameState={}
@@ -83,11 +82,12 @@ setupMandala()
 
 function playdate.update()
    do
+      --[[
       if not debugPrinted then
 	 print("EditingConfig:",EditingConfig)
 	 debugPrinted=true
       end
-      
+      ]]
       if not EditingConfig then
 	 local crankTicks=playdate.getCrankTicks(180)
 

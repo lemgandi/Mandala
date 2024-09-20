@@ -25,19 +25,23 @@ function makeGFXTable(tableDir)
    local fileList=playdate.file.listFiles(tableDir)
    local fnKey=nil
    local retVal = {}
+   local searchExtension = "%.pdi$"
    
    for kk,vv in pairs(fileList) do
-      fnKey=string.gsub(vv,"%.pdi$","")
-      local theSprite=gfx.sprite.new()
-      retVal[fnKey]={gfx.image.new(tableDir .. vv)}      
-      theSprite:setImage(retVal[fnKey][1],0,400/240)
-      table.insert(retVal[fnKey],theSprite)
+      if nil ~= string.find(vv,searchExtension) then
+	 fnKey=string.gsub(vv,searchExtension,"")
+	 local theSprite=gfx.sprite.new()
+	 retVal[fnKey]={gfx.image.new(tableDir .. vv)}      
+	 theSprite:setImage(retVal[fnKey][1],0,400/240)
+	 table.insert(retVal[fnKey],theSprite)
+      end      
    end
    
---[[ for kk,vv in pairs(retVal) do      
+--[[   
+   for kk,vv in pairs(retVal) do      
       print(kk,type(vv[1]),type(vv[2]))
    end
 ]]
-    
+   
    return retVal
 end
