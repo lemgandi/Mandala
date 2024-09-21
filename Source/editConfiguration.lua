@@ -26,7 +26,7 @@ local CurrentOnScreenTop=1
 local YTop=24
 local XLeft=30
 local YStep=24
-local ScrollAreaLines=8
+local ScrollAreaLinesMinusOne=7
 
 function editConfigurationSetup(configTable,GFXTable)
    local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
@@ -45,8 +45,8 @@ function editConfigurationSetup(configTable,GFXTable)
    
    
    CurrentOnScreenTop=1
-   if #ShapeNames > ScrollAreaLines then
-      displayShapeNames(CurrentOnScreenTop,ScrollAreaLines)
+   if #ShapeNames > ScrollAreaLinesMinusOne+1 then
+      displayShapeNames(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
    else
       displayShapeNames(CurrentOnScreenTop,#ShapeNames)
    end
@@ -79,20 +79,20 @@ end
 function scroll(updown)
 
    -- updown true = down, false = up
-   print("#ShapeNames:",#ShapeNames,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLines",ScrollAreaLines)
+   print("#ShapeNames:",#ShapeNames,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLinesMinusOne",ScrollAreaLinesMinusOne)
 
    if updown == true then
       
-      if #ShapeNames >= (CurrentOnScreenTop + ScrollAreaLines) then
+      if #ShapeNames > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
 	 clearScrollArea()
-	 displayShapeNames(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLines)
+	 displayShapeNames(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
 	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
 	 print("CurrentOnScreenTop:",CurrentOnScreenTop)
       end      
    else
       if CurrentOnScreenTop > 1 then	    
 	 clearScrollArea()
-	 displayShapeNames(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLines)
+	 displayShapeNames(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
 	 CurrentOnScreenTop = CurrentOnScreenTop - 1	 	 	 
       end	 
    end      
