@@ -27,6 +27,7 @@ local YTop=24
 local XLeft=30
 local YStep=24
 local ScrollAreaLinesMinusOne=7
+local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
 
 function editConfigurationSetup(configTable,GFXTable)
    local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
@@ -50,7 +51,7 @@ function editConfigurationSetup(configTable,GFXTable)
    else
       displayShapeNames(CurrentOnScreenTop,#ShapeNames)
    end
-   
+   drawCursor(1)
    
 end
 
@@ -98,6 +99,34 @@ function scroll(updown)
    end      
 						 
 end
+
+function drawCursor(slot,current)
+   slot=slot*YTop
+   
+   if current then
+      
+      current=current*YTop
+      local currentColor=gfx.getColor()
+   
+      gfx.setColor(gfx.kColorWhite)
+      
+      gfx.fillTriangle(Cursor.x1,
+		       Cursor.y1+slot,
+		       Cursor.x2,
+		       Cursor.y2+slot,
+		       Cursor.x3,
+		       Cursor.y3+slot)
+      gfx.setColor(currentColor)
+   end
+
+   gfx.fillTriangle(Cursor.x1,
+		    Cursor.y1+slot,
+		    Cursor.x2,
+		    Cursor.y2+slot,
+		    Cursor.x3,
+		    Cursor.y3+slot)   
+end
+
 
 function editConfiguration()
    
