@@ -2,11 +2,13 @@ Mandala Menu Behavior Options
 Charles Shapiro
 13 Sep 2024
 
-Top Object ( file system
+Top Object ( file system )
 
 Bottom Object ( file system )
 
 Shadow  ( top object casts a shadow?)
+
+Flip (boolean, mirror images bottom only, no effect on stars but will change spirals)
 
 Top Offset ( top object center not at center of screen ) ( graphic? )
 
