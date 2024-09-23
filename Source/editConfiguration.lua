@@ -28,14 +28,18 @@ local XLeft=30
 local YStep=24
 local ScrollAreaLinesMinusOne=7
 local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
+local CurrentSlot=1
 
 function editConfigurationSetup(configTable,GFXTable)
-   local myFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
+   
+   local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
+
+   local banner="Front Shape"
    
    local w,h
    local yLocation=YTop
    
-   gfx.setFont(myFont)
+   gfx.setFont(fileFont)
    
    if 0 == #ShapeNames then
       for kk in pairs(GFXTable) do
@@ -51,8 +55,20 @@ function editConfigurationSetup(configTable,GFXTable)
    else
       displayShapeNames(CurrentOnScreenTop,#ShapeNames)
    end
-   drawCursor(1)
+   drawCursor(CurrentSlot)
+   drawBanner("Front Shape")
+end
+
+function drawBanner(banner)
+      
+   local currentColor=gfx.getColor()
    
+   gfx.setColor(gfx.kColorBlack)
+   gfx.fillRect(0,0,400,YStep)
+   gfx.setColor(gfx.kColorXOR)
+   gfx.drawText(banner,XLeft,0)
+   gfx.setColor(currentColor)
+
 end
 
 function clearScrollArea()
@@ -106,16 +122,17 @@ function drawCursor(slot,current)
    if current then
       
       current=current*YTop
+
       local currentColor=gfx.getColor()
    
       gfx.setColor(gfx.kColorWhite)
       
       gfx.fillTriangle(Cursor.x1,
-		       Cursor.y1+slot,
+		       Cursor.y1+current,
 		       Cursor.x2,
-		       Cursor.y2+slot,
+		       Cursor.y2+current,
 		       Cursor.x3,
-		       Cursor.y3+slot)
+		       Cursor.y3+current)
       gfx.setColor(currentColor)
    end
 
@@ -131,11 +148,25 @@ end
 function editConfiguration()
    
    if playdate.buttonIsPressed(playdate.kButtonB) then
-      EditingConfig = false
+      EditingConfig = false      
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
-      scroll(true)
+      if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
+	 drawCursor(CurrentSlot + 1,CurrentSlot)
+	 CurrentSlot = CurrentSlot + 1
+      else
+	 scroll(true)
+	 drawCursor((ScrollAreaLinesMinusOne + 1),ScrollAreaLinesMinusOne)
+      end      	 
    elseif playdate.buttonJustPressed(playdate.kButtonUp) then
-      scroll(false)
+      if CurrentSlot > 1 then
+	 drawCursor(CurrentSlot - 1, CurrentSlot)
+	 CurrentSlot = CurrentSlot - 1
+      else	 
+	 scroll(false)
+	 drawCursor(1,CurrentSlot)
+	 CurrentSlot = 1
+      end
+   elseif playdate.buttonJustPressed(playdate.kButtonA) then
+      print("Current Shape:",ShapeNames[(CurrentOnScreenTop + CurrentSlot)-1])
    end
-   
 end
