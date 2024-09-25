@@ -148,7 +148,7 @@ end
 function editConfiguration()
    
    if playdate.buttonIsPressed(playdate.kButtonB) then
-      EditingConfig = false      
+      State = StateTable.DrawingShapes
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
 	 drawCursor(CurrentSlot + 1,CurrentSlot)

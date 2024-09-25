@@ -33,41 +33,71 @@ MandalaGFX = {}
 
 local CurrentRotation = 0
 local ShapeName="Line"
+StateTable={DrawingShapes="DrawingShapes",DrawingMenus="DrawingMenus",
+	    ReadingMenus="ReadingMenus",WritingConfiguration="WritingConfiguration"}
 
+State=StateTable.DrawingShapes
+print("State at start:",State)
 -- In global table
 EditingConfig=false
 
-local GameState
-local debugPrinted=false
+local GameConfig
+local GameConfigAtStart
 
+local debugPrinted=0
+
+-- Run configuration editor from playdate.update
 function runConfigEditor()
    gfx.clear()
-   EditingConfig=true
-   editConfigurationSetup(GameState,MandalaGFX)
-   editConfiguration()
-   playdate.datastore.write(GameState)   
+   State = StateTable.ReadingMenus
+   editConfigurationSetup(GameConfig,MandalaGFX)
 end
 
+-- Simple copy to reserve table so we can see if current GameState table is Dirty
+function deepcopy(src)
+   local dest={}
+   for kk,vv in pairs(src) do
+      dest[kk] = vv
+   end
+   return dest
+end
 
+-- Write config data iff dirty
+function writeconfiguration()
+   local dirtyFlag=false
+   for kk,vv in ipairs(Gameconfig) do
+      if GameConfigAtStart[kk] ~= Gameconfig[kk] then
+	 dirtyFlag=true
+      end
+   end
+   if dirtyFlag then
+      GameConfigAtStart = deepcopy(GameConfig)
+      playdate.datastore.write(GameConfig)
+   end
+   
+end
+
+-- Set up before update calls
+   
 function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
-   
-
-   GameState=playdate.datastore.read()
-
-   if nil == GameState then
-      GameState={}
-      GameState["which"]="Line"
-      playdate.datastore.write(GameState)
-      editConfigurationSetup(GameState,MandalaGFX)      
-      EditingConfig=true
+      
+   if nil == GameConfig then
+      GameConfig={}
+      GameConfig["which"]="Line"
+      GameConfigAtStart=deepcopy(GameConfig)
+      playdate.datastore.write(GameConfig)
+      State = StateTable.DrawingMenus
    end
+   GameConfig=playdate.datastore.read()
+   GameConfigAtStart = deepcopy(GameConfig)
+   State = StateTable.DrawingShapes
    
    local menu=playdate.getSystemMenu()
-   menu:addMenuItem("Configure",runConfigEditor)
+   menu:addMenuItem("Configure",function() State=StateTable.DrawingMenus end)
    
-   ShapeName=GameState["which"]
+   ShapeName=GameConfig["which"]
    
    MandalaGFX[ShapeName][2]:moveTo(200,120)
    MandalaGFX[ShapeName][2]:add()
@@ -76,19 +106,24 @@ function setupMandala()
 
    
 end
+
 -- Main Line starts Here
 
+-- Setup
 setupMandala()
 
+-- Loop until force stop
 function playdate.update()
-   do
-      --[[
-      if not debugPrinted then
-	 print("EditingConfig:",EditingConfig)
-	 debugPrinted=true
+   do      
+      if debugPrinted > 480 then
+	 print("State:",StateTable[State])
+	 debugPrinted=0
+      else
+	 debugPrinted = debugPrinted+1
       end
-      ]]
-      if not EditingConfig then
+      
+      
+      if State == StateTable.DrawingShapes  then
 	 local crankTicks=playdate.getCrankTicks(180)
 
 	 if crankTicks ~= 0 then
@@ -97,9 +132,20 @@ function playdate.update()
 	 end      
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeName][1]:draw(0,0)
-      else
+      elseif State == StateTable.ReadingMenus then	 
 	 editConfiguration()
-      end
+	 print("State:",StateTable[State])
+      elseif State == StateTable.DrawingMenus then
+	 playdate.graphics.clear()   
+	 playdate.stop()
+	 editConfigurationSetup(GameConfig,MandalaGFX)
+	 --	 playdate.display.flush()
+	 State=StateTable.ReadingMenus	 
+	 playdate.start()
+      elseif State == StateTable.WritingConfiguration then
+	 writeConfiguration()
+	 State=StateTable.DrawingShapes
+      end      
    end
    
 end
