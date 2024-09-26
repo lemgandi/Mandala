@@ -115,7 +115,7 @@ setupMandala()
 -- Loop until force stop
 function playdate.update()
    do      
-      if debugPrinted > 480 then
+      if debugPrinted > 60 then
 	 print("State:",StateTable[State])
 	 debugPrinted=0
       else
@@ -134,7 +134,6 @@ function playdate.update()
 	 MandalaGFX[ShapeName][1]:draw(0,0)
       elseif State == StateTable.ReadingMenus then	 
 	 editConfiguration()
-	 print("State:",StateTable[State])
       elseif State == StateTable.DrawingMenus then
 	 playdate.graphics.clear()   
 	 playdate.stop()
