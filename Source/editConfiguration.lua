@@ -21,7 +21,7 @@ import "CoreLibs/strict"
 
 gfx = playdate.graphics
 
-local ShapeNames={}
+local ChoiceKeys={}
 local CurrentOnScreenTop=1
 local YTop=24
 local XLeft=30
@@ -30,7 +30,9 @@ local ScrollAreaLinesMinusOne=7
 local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
 local CurrentSlot=1
 
-function editConfigurationSetup(configTable,GFXTable)
+
+-- Set screen up to display a menu
+function editConfigurationSetup(configTable,choices)
    
    local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
 
@@ -41,24 +43,26 @@ function editConfigurationSetup(configTable,GFXTable)
    
    gfx.setFont(fileFont)
    
-   if 0 == #ShapeNames then
-      for kk in pairs(GFXTable) do
-	 table.insert(ShapeNames,kk)
+   if 0 == #ChoiceKeys then
+      for kk in pairs(choices) do
+	 table.insert(ChoiceKeys,kk)
       end
-      table.sort(ShapeNames)
+      table.sort(ChoiceKeys)
    end
    
    
    CurrentOnScreenTop=1
-   if #ShapeNames > ScrollAreaLinesMinusOne+1 then
-      displayShapeNames(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
+   if #ChoiceKeys > ScrollAreaLinesMinusOne+1 then
+      displayChoiceKeys(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
    else
-      displayShapeNames(CurrentOnScreenTop,#ShapeNames)
+      displayChoiceKeys(CurrentOnScreenTop,#ChoiceKeys)
    end
    drawCursor(CurrentSlot)
    drawBanner("Front Shape")
 end
 
+
+-- Draw the banner indicating what menu we are on
 function drawBanner(banner)
       
    local currentColor=gfx.getColor()
@@ -71,6 +75,7 @@ function drawBanner(banner)
 
 end
 
+-- Prepare to Scroll!
 function clearScrollArea()
    local scrollAreaRect=playdate.geometry.rect.new(XLeft,YTop,(playdate.display.getWidth() - XLeft),
 						   (playdate.display.getHeight() - YTop))
@@ -83,39 +88,43 @@ function clearScrollArea()
 
 end
 
--- Display shape names on screen
-function displayShapeNames(firstone,numshapes)
+-- Display menu choices on screen
+function displayChoiceKeys(firstone,numshapes)
    local yLocation=YTop
 
    for key=firstone,numshapes do
-      gfx.drawText(ShapeNames[key],XLeft,yLocation)
+      gfx.drawText(ChoiceKeys[key],XLeft,yLocation)
       yLocation=yLocation+YStep
    end
 end
 
+-- Scroll a menu if necessary, updown true = down, false = up
 function scroll(updown)
 
-   -- updown true = down, false = up
-   print("#ShapeNames:",#ShapeNames,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLinesMinusOne",ScrollAreaLinesMinusOne)
+
+   print("#ChoiceKeys:",#ChoiceKeys,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLinesMinusOne",ScrollAreaLinesMinusOne)
 
    if updown == true then
       
-      if #ShapeNames > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
+      if #ChoiceKeys > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
 	 clearScrollArea()
-	 displayShapeNames(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
+	 displayChoiceKeys(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
 	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
 	 print("CurrentOnScreenTop:",CurrentOnScreenTop)
       end      
    else
       if CurrentOnScreenTop > 1 then	    
 	 clearScrollArea()
-	 displayShapeNames(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
+	 displayChoiceKeys(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
 	 CurrentOnScreenTop = CurrentOnScreenTop - 1	 	 	 
       end	 
    end      
 						 
 end
 
+-- Draw the cursor on the left side of the screen at slot; delete from current position if necessary.
+-- Right now I have 8 slots at 24 px each plus a banner slot ( cursor never goes there) and a bottom space
+-- ( cursor never goes there )
 function drawCursor(slot,current)
    slot=slot*YTop
    
@@ -145,10 +154,12 @@ function drawCursor(slot,current)
 end
 
 
+-- Display and move cursor, return current value at cursor when kButtonB is pressed.
 function editConfiguration()
    
-   if playdate.buttonIsPressed(playdate.kButtonB) then
+   if playdate.buttonIsPressed(playdate.kButtonB) then      
       State = StateTable.DrawingShapes
+      return ChoiceKeys[(CurrentOnScreenTop + CurrentSlot)-1]
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
 	 drawCursor(CurrentSlot + 1,CurrentSlot)
@@ -167,6 +178,6 @@ function editConfiguration()
 	 CurrentSlot = 1
       end
    elseif playdate.buttonJustPressed(playdate.kButtonA) then
-      print("Current Shape:",ShapeNames[(CurrentOnScreenTop + CurrentSlot)-1])
+      print("Current Shape:",ChoiceKeys[(CurrentOnScreenTop + CurrentSlot)-1])
    end
 end

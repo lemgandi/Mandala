@@ -33,11 +33,13 @@ MandalaGFX = {}
 
 local CurrentRotation = 0
 local ShapeName="Line"
+local CurrentChoice=nil
 StateTable={DrawingShapes="DrawingShapes",DrawingMenus="DrawingMenus",
-	    ReadingMenus="ReadingMenus",WritingConfiguration="WritingConfiguration"}
+	    ReadingMenus="ReadingMenus"}
 
 State=StateTable.DrawingShapes
-print("State at start:",State)
+
+
 -- In global table
 EditingConfig=false
 
@@ -45,13 +47,6 @@ local GameConfig
 local GameConfigAtStart
 
 local debugPrinted=0
-
--- Run configuration editor from playdate.update
-function runConfigEditor()
-   gfx.clear()
-   State = StateTable.ReadingMenus
-   editConfigurationSetup(GameConfig,MandalaGFX)
-end
 
 -- Simple copy to reserve table so we can see if current GameState table is Dirty
 function deepcopy(src)
@@ -63,10 +58,10 @@ function deepcopy(src)
 end
 
 -- Write config data iff dirty
-function writeconfiguration()
+function writeConfiguration()
    local dirtyFlag=false
-   for kk,vv in ipairs(Gameconfig) do
-      if GameConfigAtStart[kk] ~= Gameconfig[kk] then
+   for kk,vv in ipairs(GameConfig) do
+      if GameConfigAtStart[kk] ~= GameConfig[kk] then
 	 dirtyFlag=true
       end
    end
@@ -82,41 +77,52 @@ end
 function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
-      
+   GameConfig = playdate.datastore.read()
+   
    if nil == GameConfig then
       GameConfig={}
       GameConfig["which"]="Line"
       GameConfigAtStart=deepcopy(GameConfig)
       playdate.datastore.write(GameConfig)
       State = StateTable.DrawingMenus
+   else
+      GameConfigAtStart = deepcopy(GameConfig)
+      State = StateTable.DrawingShapes      
    end
-   GameConfig=playdate.datastore.read()
-   GameConfigAtStart = deepcopy(GameConfig)
-   State = StateTable.DrawingShapes
-   
+      
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingMenus end)
    
    ShapeName=GameConfig["which"]
    
-   MandalaGFX[ShapeName][2]:moveTo(200,120)
-   MandalaGFX[ShapeName][2]:add()
-
+   drawNewMandala()
+   
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
    
 end
 
--- Main Line starts Here
+-- Remove moving sprite from screen
+function deleteOldMandala()
+   MandalaGFX[ShapeName][2]:remove()
+end
 
--- Setup
+-- Draw new moving sprite on screen
+function drawNewMandala()
+   MandalaGFX[ShapeName][2]:moveTo(200,120)
+   MandalaGFX[ShapeName][2]:add()
+end
+
+----------------------------- Main Line starts Here ----------------------------------------------
+
+
 setupMandala()
 
 -- Loop until force stop
 function playdate.update()
    do      
       if debugPrinted > 60 then
-	 print("State:",StateTable[State])
+	 print("State:",StateTable[State],"CurrentChoice:",CurrentChoice)
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
@@ -133,17 +139,19 @@ function playdate.update()
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeName][1]:draw(0,0)
       elseif State == StateTable.ReadingMenus then	 
-	 editConfiguration()
+	 CurrentChoice = editConfiguration()
+	 if (CurrentChoice ~= nil) and (CurrentChoice ~= ShapeName) then
+	    deleteOldMandala()
+	    ShapeName = CurrentChoice
+	    writeConfiguration()
+	    GameConfig["which"] = ShapeName
+	    drawNewMandala()
+	    State=StateTable.DrawingShapes
+	 end	 
       elseif State == StateTable.DrawingMenus then
 	 playdate.graphics.clear()   
-	 playdate.stop()
 	 editConfigurationSetup(GameConfig,MandalaGFX)
-	 --	 playdate.display.flush()
 	 State=StateTable.ReadingMenus	 
-	 playdate.start()
-      elseif State == StateTable.WritingConfiguration then
-	 writeConfiguration()
-	 State=StateTable.DrawingShapes
       end      
    end
    

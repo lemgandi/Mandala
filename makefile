@@ -9,7 +9,7 @@ GAME=$(notdir $(CURDIR))
 CONFIG=$(SDK)/Disk/Data/org.tomshiro.mandala
 SIM=PlaydateSimulator
 SRCDIR=Source
-GAMESRC=$(SRCDIR)/main.lua $(SRCDIR)/editConfiguration.lua $(SRCDIR)/makeGFXTable.lua
+GAMESRC=$(SRCDIR)/main.lua $(SRCDIR)/editConfiguration.lua $(SRCDIR)/makeGFXTable.lua makefile
 
 build: compile run
 
@@ -25,6 +25,7 @@ dist:
 	zip -r ${GAME}.zip ${GAME}.pdx/*
 
 $(GAME).pdx : $(GAMESRC)
+	echo Compiling $(GAMESRC)
 	"$(SDKBIN)/pdc" '-k' 'Source' '$(GAME).pdx'
 
 open:
