@@ -39,7 +39,6 @@ StateTable={DrawingShapes="DrawingShapes",DrawingMenus="DrawingMenus",
 
 State=StateTable.DrawingShapes
 
-
 -- In global table
 EditingConfig=false
 
@@ -60,14 +59,16 @@ end
 -- Write config data iff dirty
 function writeConfiguration()
    local dirtyFlag=false
-   for kk,vv in ipairs(GameConfig) do
-      if GameConfigAtStart[kk] ~= GameConfig[kk] then
+
+   for kk,vv in pairs(GameConfig) do
+      if GameConfigAtStart[kk] ~= vv then
 	 dirtyFlag=true
       end
    end
+
    if dirtyFlag then
-      GameConfigAtStart = deepcopy(GameConfig)
       playdate.datastore.write(GameConfig)
+      GameConfigAtStart = deepcopy(GameConfig)      
    end
    
 end
@@ -78,7 +79,7 @@ function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
    GameConfig = playdate.datastore.read()
-   
+      
    if nil == GameConfig then
       GameConfig={}
       GameConfig["which"]="Line"
@@ -142,15 +143,15 @@ function playdate.update()
 	 CurrentChoice = editConfiguration()
 	 if (CurrentChoice ~= nil) and (CurrentChoice ~= ShapeName) then
 	    deleteOldMandala()
-	    ShapeName = CurrentChoice
-	    writeConfiguration()
+	    ShapeName = CurrentChoice	    
 	    GameConfig["which"] = ShapeName
+	    writeConfiguration()	    
 	    drawNewMandala()
 	    State=StateTable.DrawingShapes
 	 end	 
       elseif State == StateTable.DrawingMenus then
 	 playdate.graphics.clear()   
-	 editConfigurationSetup(GameConfig,MandalaGFX)
+	 editConfigurationSetup(GameConfig,MandalaGFX,"Front Shape")
 	 State=StateTable.ReadingMenus	 
       end      
    end

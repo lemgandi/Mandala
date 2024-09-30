@@ -32,7 +32,7 @@ local CurrentSlot=1
 
 
 -- Set screen up to display a menu
-function editConfigurationSetup(configTable,choices)
+function editConfigurationSetup(configTable,choices,menuname)
    
    local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
 
@@ -58,7 +58,7 @@ function editConfigurationSetup(configTable,choices)
       displayChoiceKeys(CurrentOnScreenTop,#ChoiceKeys)
    end
    drawCursor(CurrentSlot)
-   drawBanner("Front Shape")
+   drawBanner(menuname)
 end
 
 
@@ -101,16 +101,12 @@ end
 -- Scroll a menu if necessary, updown true = down, false = up
 function scroll(updown)
 
-
-   print("#ChoiceKeys:",#ChoiceKeys,"CurrentOnScreenTop",CurrentOnScreenTop,"ScrollAreaLinesMinusOne",ScrollAreaLinesMinusOne)
-
    if updown == true then
       
       if #ChoiceKeys > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
 	 clearScrollArea()
 	 displayChoiceKeys(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
 	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
-	 print("CurrentOnScreenTop:",CurrentOnScreenTop)
       end      
    else
       if CurrentOnScreenTop > 1 then	    
