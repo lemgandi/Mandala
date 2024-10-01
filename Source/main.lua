@@ -147,7 +147,7 @@ function playdate.update()
 	 if (CurrentChoice ~= nil) and (CurrentChoice ~= MandalaGFX[ShapeKey].prompt) then
 	    deleteOldMandala(ShapeKey)	    
 	    ShapeKey = searchGFXTable(CurrentChoice,MandalaGFX)	    
-	    GameConfig["which"] = CurrentChoice.prompt
+	    GameConfig["which"] = CurrentChoice
 	    writeConfiguration()	    
 	    drawNewMandala(ShapeKey)
 	    State=StateTable.DrawingShapes
