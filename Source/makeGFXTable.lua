@@ -23,25 +23,42 @@ import "CoreLibs/strict"
 
 function makeGFXTable(tableDir)
    local fileList=playdate.file.listFiles(tableDir)
-   local fnKey=nil
    local retVal = {}
+   local gfxEntry={}
    local searchExtension = "%.pdi$"
+   local prompt
    
    for kk,vv in pairs(fileList) do
       if nil ~= string.find(vv,searchExtension) then
-	 fnKey=string.gsub(vv,searchExtension,"")
+	 prompt = string.gsub(vv,searchExtension,"")
 	 local theSprite=gfx.sprite.new()
-	 retVal[fnKey]={gfx.image.new(tableDir .. vv)}      
-	 theSprite:setImage(retVal[fnKey][1],0,400/240)
-	 table.insert(retVal[fnKey],theSprite)
+	 gfxEntry = {gfx.image.new(tableDir .. vv)}      
+	 theSprite:setImage(gfxEntry[1],0,400/240)
+	 table.insert(gfxEntry,theSprite)
+	 gfxEntry["prompt"]=prompt
+	 table.insert(retVal,gfxEntry)
       end      
    end
    
---[[   
-   for kk,vv in pairs(retVal) do      
-      print(kk,type(vv[1]),type(vv[2]))
-   end
-]]
-   
    return retVal
+end
+
+function testGFXTable()
+   local theTable=makeGFXTable(ImageDir)
+   printTable(theTable)
+end
+
+function testSearchGFXTable()
+   local theTable=makeGFXTable(ImageDir)
+   local tableKey=searchGFXTable("Line",theTable)   
+   printTable( theTable[tableKey] )	      
+end
+
+
+function searchGFXTable(p,t)
+   for kk,vv in pairs(t) do
+      if vv.prompt == p then
+	 return kk
+      end
+   end   
 end

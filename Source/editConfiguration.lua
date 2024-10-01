@@ -21,7 +21,7 @@ import "CoreLibs/strict"
 
 gfx = playdate.graphics
 
-local ChoiceKeys={}
+
 local CurrentOnScreenTop=1
 local YTop=24
 local XLeft=30
@@ -29,7 +29,7 @@ local YStep=24
 local ScrollAreaLinesMinusOne=7
 local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
 local CurrentSlot=1
-
+local Choices
 
 -- Set screen up to display a menu
 function editConfigurationSetup(configTable,choices,menuname)
@@ -42,20 +42,13 @@ function editConfigurationSetup(configTable,choices,menuname)
    local yLocation=YTop
    
    gfx.setFont(fileFont)
-   
-   if 0 == #ChoiceKeys then
-      for kk in pairs(choices) do
-	 table.insert(ChoiceKeys,kk)
-      end
-      table.sort(ChoiceKeys)
-   end
-   
-   
+   Choices = choices      
    CurrentOnScreenTop=1
-   if #ChoiceKeys > ScrollAreaLinesMinusOne+1 then
-      displayChoiceKeys(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
+   
+   if #Choices > ScrollAreaLinesMinusOne+1 then
+      displayChoices(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
    else
-      displayChoiceKeys(CurrentOnScreenTop,#ChoiceKeys)
+      displayChoices(CurrentOnScreenTop,#Choices)
    end
    drawCursor(CurrentSlot)
    drawBanner(menuname)
@@ -89,11 +82,11 @@ function clearScrollArea()
 end
 
 -- Display menu choices on screen
-function displayChoiceKeys(firstone,numshapes)
+function displayChoices(firstone,numshapes)
    local yLocation=YTop
 
    for key=firstone,numshapes do
-      gfx.drawText(ChoiceKeys[key],XLeft,yLocation)
+      gfx.drawText(Choices[key].prompt,XLeft,yLocation)
       yLocation=yLocation+YStep
    end
 end
@@ -103,19 +96,18 @@ function scroll(updown)
 
    if updown == true then
       
-      if #ChoiceKeys > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
+      if #Choices > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
 	 clearScrollArea()
-	 displayChoiceKeys(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
+	 displayChoices(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
 	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
       end      
    else
       if CurrentOnScreenTop > 1 then	    
 	 clearScrollArea()
-	 displayChoiceKeys(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
+	 displayChoices(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
 	 CurrentOnScreenTop = CurrentOnScreenTop - 1	 	 	 
       end	 
-   end      
-						 
+   end      						 
 end
 
 -- Draw the cursor on the left side of the screen at slot; delete from current position if necessary.
@@ -155,7 +147,7 @@ function editConfiguration()
    
    if playdate.buttonIsPressed(playdate.kButtonB) then      
       State = StateTable.DrawingShapes
-      return ChoiceKeys[(CurrentOnScreenTop + CurrentSlot)-1]
+      return Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
 	 drawCursor(CurrentSlot + 1,CurrentSlot)
@@ -174,6 +166,6 @@ function editConfiguration()
 	 CurrentSlot = 1
       end
    elseif playdate.buttonJustPressed(playdate.kButtonA) then
-      print("Current Shape:",ChoiceKeys[(CurrentOnScreenTop + CurrentSlot)-1])
+      print("Current Shape:",Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt)
    end
 end
