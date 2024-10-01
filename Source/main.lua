@@ -154,7 +154,7 @@ function playdate.update()
 	 end	 
       elseif State == StateTable.DrawingMenus then
 	 playdate.graphics.clear()   
-	 editConfigurationSetup(GameConfig,MandalaGFX,"Front Shape")
+	 editConfigurationSetup(MandalaGFX,"Front Shape")
 	 State=StateTable.ReadingMenus	 
       end      
    end   

@@ -21,12 +21,29 @@
 import "CoreLibs/string"
 import "CoreLibs/strict"
 
+-- Are two GFXTable entries equivalent (for sort by prompt)
+function GFXTableCompareEntries(vf,vs)
+   local retVal=true
+   if vf.prompt >= vs.prompt then
+      retVal=false
+   end
+   return retVal
+end
+
+-- Make global graphics table from pictures in tableDir
 function makeGFXTable(tableDir)
    local fileList=playdate.file.listFiles(tableDir)
    local retVal = {}
    local gfxEntry={}
    local searchExtension = "%.pdi$"
    local prompt
+   
+--[[
+   GFX table. Each entry contains:
+   * Prompt (filename of png)
+   * Image from png
+   * Sprite from image of png
+]]
    
    for kk,vv in pairs(fileList) do
       if nil ~= string.find(vv,searchExtension) then
@@ -40,21 +57,28 @@ function makeGFXTable(tableDir)
       end      
    end
    
+   -- Sort GFX table by prompt so menu displays in alpha order.
+   table.sort(retVal,GFXTableCompareEntries)
+   
    return retVal
 end
-
+--[[
+-- Is GFX table valid?
 function testGFXTable()
    local theTable=makeGFXTable(ImageDir)
    printTable(theTable)
 end
 
+-- Does GFX table search by prompt actually workee?
 function testSearchGFXTable()
    local theTable=makeGFXTable(ImageDir)
    local tableKey=searchGFXTable("Line",theTable)   
    printTable( theTable[tableKey] )	      
 end
+]]
 
 
+-- Find a GFX table entry by its prompt from menu
 function searchGFXTable(p,t)
    for kk,vv in pairs(t) do
       if vv.prompt == p then
