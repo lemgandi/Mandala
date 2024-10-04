@@ -94,6 +94,8 @@ function setupMandala()
    if nil == GameConfig then
       GameConfig={}
       GameConfig["which"]="Line"
+      GameConfig["offset"]=0.5
+      GameConfig["crankticks"]=180
       GameConfigAtStart=deepcopy(GameConfig)
       playdate.datastore.write(GameConfig)
       State = StateTable.DrawingMenus
@@ -121,6 +123,7 @@ end
 function drawNewMandala(key)
    MandalaGFX[key][2]:moveTo(200,120)
    MandalaGFX[key][2]:add()
+   MandalaGFX[key][2]:setCenter(0.5,GameConfig.offset)
    MandalaGFX[key][1]:draw(0,0)   
 end
 
@@ -141,7 +144,7 @@ function playdate.update()
       
       
       if State == StateTable.DrawingShapes  then
-	 local crankTicks=playdate.getCrankTicks(180)
+	 local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
 
 	 if crankTicks ~= 0 then
 	    CurrentRotation = CurrentRotation + crankTicks	 
