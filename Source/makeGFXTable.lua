@@ -50,7 +50,7 @@ function makeGFXTable(tableDir)
 	 prompt = string.gsub(vv,searchExtension,"")
 	 local theSprite=gfx.sprite.new()
 	 gfxEntry = {gfx.image.new(tableDir .. vv)}      
-	 theSprite:setImage(gfxEntry[1],0,400/240)
+	 theSprite:setImage(gfxEntry[1],gfx.kImageUnflipped)
 	 table.insert(gfxEntry,theSprite)
 	 gfxEntry["prompt"]=prompt
 	 table.insert(retVal,gfxEntry)

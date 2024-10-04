@@ -31,7 +31,7 @@ ImageDir="Images/shapes/"
 
 MandalaGFX = {}
 
-local CurrentRotation = 0
+local CurrentRotation = 1
 -- local ShapeName="Line"
 ShapeKey=nil
 local CurrentChoice=nil
@@ -40,6 +40,13 @@ StateTable={DrawingShapes="DrawingShapes",DrawingMenus="DrawingMenus",
 
 State=StateTable.DrawingShapes
 
+menuState={TopShape="TopShape",BottomShape="BottomShape",Offset="Offset",End="End"}
+menuTable={
+   {prompt='Choose Top Shape',returns=menuState.TopShape},
+   {prompt='Choose Bottom Shape',returns=menuState.BottomShape},
+   {prompt='Set Offset',returns=menuState.Offset},
+   {prompt='Finish',returns=menuState.End}
+}
 -- In global table
 EditingConfig=false
 
@@ -112,9 +119,9 @@ end
 
 -- Draw new moving sprite on screen
 function drawNewMandala(key)
-   MandalaGFX[key][1]:draw(0,0)
    MandalaGFX[key][2]:moveTo(200,120)
    MandalaGFX[key][2]:add()
+   MandalaGFX[key][1]:draw(0,0)   
 end
 
 ----------------------------- Main Line starts Here ----------------------------------------------
@@ -138,7 +145,7 @@ function playdate.update()
 
 	 if crankTicks ~= 0 then
 	    CurrentRotation = CurrentRotation + crankTicks	 
-	    MandalaGFX[ShapeKey][2]:setRotation(CurrentRotation,400/240)
+	    MandalaGFX[ShapeKey][2]:setRotation(CurrentRotation)
 	 end      
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeKey][1]:draw(0,0)
