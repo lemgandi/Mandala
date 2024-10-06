@@ -102,6 +102,7 @@ function setupMandala()
       GameConfig["which"]="Line"
       GameConfig["offset"]=0.5
       GameConfig["crankticks"]=180
+      GameConfig["imageflip"]=gfx.kImageUnflipped
       GameConfigAtStart=deepcopy(GameConfig)
       playdate.datastore.write(GameConfig)
       State = StateTable.DrawingMenus
@@ -130,7 +131,7 @@ function drawNewMandala(key)
    MandalaGFX[key][2]:moveTo(200,120)
    MandalaGFX[key][2]:add()
    MandalaGFX[key][2]:setCenter(0.5,GameConfig.offset)
-   MandalaGFX[key][1]:draw(0,0)   
+   MandalaGFX[key][1]:draw(0,0,GameConfig.imageflip)   
 end
 
 ----------------------------- Main Line starts Here ----------------------------------------------
@@ -157,7 +158,7 @@ function playdate.update()
 	    MandalaGFX[ShapeKey][2]:setRotation(CurrentRotation)
 	 end      
 	 gfx.sprite.update()
-	 MandalaGFX[ShapeKey][1]:draw(0,0)
+	 MandalaGFX[ShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
       elseif State == StateTable.ReadingMenus then
 	 
 	 CurrentChoice = editConfiguration()
