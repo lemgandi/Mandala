@@ -38,10 +38,10 @@ local Choices
 function editConfigurationSetup(choices,menuname,currentChoice)
    
    local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
-   local mySlot=1
+   local oldChoice=1
    
    if currentChoice ~= nil then
-      mySlot=SearchMenuTable(currentChoice,choices)
+      oldChoice=SearchMenuTable(currentChoice,choices)
    end
    
    local banner="Front Shape"
@@ -49,7 +49,7 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    local w,h
    local yLocation=YTop
    
-   print("mySlot:",mySlot,"prompt:",choices[mySlot].prompt)
+   print("oldChoice:",oldChoice,"prompt:",choices[oldChoice].prompt)
    
    gfx.setFont(fileFont)
    Choices = choices      
@@ -59,6 +59,17 @@ function editConfigurationSetup(choices,menuname,currentChoice)
       displayChoices(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
    else
       displayChoices(CurrentOnScreenTop,#Choices)
+   end
+   
+   if oldChoice < ScrollAreaLinesMinusOne + 1
+   then
+      CurrentSlot=oldChoice
+   else
+      local numberOfScrolls=oldChoice - (ScrollAreaLinesMinusOne + 1)
+      for kk=1,numberOfScrolls do
+	 scroll(true)
+      end
+      CurrentSlot=(ScrollAreaLinesMinusOne + 1)
    end
    
    drawCursor(CurrentSlot)
