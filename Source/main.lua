@@ -25,6 +25,7 @@ import "CoreLibs/strict"
 
 import "makeGFXTable"
 import "editConfiguration"
+import "utility"
 
 gfx = playdate.graphics
 ImageDir="Images/shapes/"
@@ -35,18 +36,23 @@ local CurrentRotation = 1
 -- local ShapeName="Line"
 ShapeKey=nil
 local CurrentChoice=nil
-StateTable={DrawingShapes="DrawingShapes",DrawingMenus="DrawingMenus",
-	    ReadingMenus="ReadingMenus"}
+StateTable={DrawingShapes="DrawingShapes",ReadingMenus="ReadingMenus"}
 
 State=StateTable.DrawingShapes
 
-menuState={TopShape="TopShape",BottomShape="BottomShape",Offset="Offset",End="End"}
+menuState={TopShape="TopShape",
+	   BottomShape="BottomShape",
+	   Offset="Offset",
+	   ScaleBottomShape="ScaleBottomShape",
+	   End="End"}
+
 menuTable={
    {prompt='Choose Top Shape',returns=menuState.TopShape},
    {prompt='Choose Bottom Shape',returns=menuState.BottomShape},
    {prompt='Set Offset',returns=menuState.Offset},
-   {prompt='Finish',returns=menuState.End}
+   {prompt='Scale Bottom Shape', returns=menuState.ScaleBottomShape}
 }
+
 -- In global table
 EditingConfig=false
 
@@ -87,7 +93,7 @@ function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
    --   testGFXTable()
-   -- testSearchGFXTable()
+   -- testSearchMenuTable()
    
    GameConfig = playdate.datastore.read()
       
@@ -107,7 +113,7 @@ function setupMandala()
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingMenus end)
    
-   ShapeKey=searchGFXTable(GameConfig["which"],MandalaGFX)
+   ShapeKey=SearchMenuTable(GameConfig["which"],MandalaGFX)
    
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
@@ -152,11 +158,12 @@ function playdate.update()
 	 end      
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeKey][1]:draw(0,0)
-      elseif State == StateTable.ReadingMenus then	 
+      elseif State == StateTable.ReadingMenus then
+	 
 	 CurrentChoice = editConfiguration()
 	 if (CurrentChoice ~= nil) and (CurrentChoice ~= MandalaGFX[ShapeKey].prompt) then
 	    deleteOldMandala(ShapeKey)	    
-	    ShapeKey = searchGFXTable(CurrentChoice,MandalaGFX)	    
+	    ShapeKey = SearchMenuTable(CurrentChoice,MandalaGFX)	    
 	    GameConfig["which"] = CurrentChoice
 	    writeConfiguration()	    
 	    drawNewMandala(ShapeKey)
@@ -164,7 +171,7 @@ function playdate.update()
 	 end	 
       elseif State == StateTable.DrawingMenus then
 	 playdate.graphics.clear()   
-	 editConfigurationSetup(MandalaGFX,"Front Shape")
+	 editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["which"])
 	 State=StateTable.ReadingMenus	 
       end      
    end   

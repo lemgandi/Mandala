@@ -18,6 +18,7 @@
 --]]
 import "CoreLibs/graphics"
 import "CoreLibs/strict"
+import "utility"
 
 gfx = playdate.graphics
 
@@ -34,14 +35,21 @@ local Choices
 -- Set screen up to display a menu. Menus consist of a table of tables. The table must be an integer keyed
 -- table, each entry in the table must contain a "prompt" member. This will return the prompt to which the
 -- cursor is currently pointing when kButtonB is pressed.
-function editConfigurationSetup(choices,menuname)
+function editConfigurationSetup(choices,menuname,currentChoice)
    
    local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
-
+   local mySlot=1
+   
+   if currentChoice ~= nil then
+      mySlot=SearchMenuTable(currentChoice,choices)
+   end
+   
    local banner="Front Shape"
    
    local w,h
    local yLocation=YTop
+   
+   print("mySlot:",mySlot,"prompt:",choices[mySlot].prompt)
    
    gfx.setFont(fileFont)
    Choices = choices      
@@ -52,6 +60,7 @@ function editConfigurationSetup(choices,menuname)
    else
       displayChoices(CurrentOnScreenTop,#Choices)
    end
+   
    drawCursor(CurrentSlot)
    drawBanner(menuname)
 end

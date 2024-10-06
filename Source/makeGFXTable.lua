@@ -20,15 +20,8 @@
 
 import "CoreLibs/string"
 import "CoreLibs/strict"
+import "utility"
 
--- Are two GFXTable entries equivalent (for sort by prompt)
-function GFXTableCompareEntries(vf,vs)
-   local retVal=true
-   if vf.prompt >= vs.prompt then
-      retVal=false
-   end
-   return retVal
-end
 
 -- Make global graphics table from pictures in tableDir
 function makeGFXTable(tableDir)
@@ -58,7 +51,7 @@ function makeGFXTable(tableDir)
    end
    
    -- Sort GFX table by prompt so menu displays in alpha order.
-   table.sort(retVal,GFXTableCompareEntries)
+   table.sort(retVal,CompareMenuTableEntries)
    
    return retVal
 end
@@ -72,17 +65,9 @@ end
 -- Does GFX table search by prompt actually workee?
 function testSearchGFXTable()
    local theTable=makeGFXTable(ImageDir)
-   local tableKey=searchGFXTable("Line",theTable)   
+   local tableKey=searchTableByPrompt("Line",theTable)   
    printTable( theTable[tableKey] )	      
 end
 ]]
 
 
--- Find a GFX table entry by its prompt from menu
-function searchGFXTable(p,t)
-   for kk,vv in pairs(t) do
-      if vv.prompt == p then
-	 return kk
-      end
-   end   
-end
