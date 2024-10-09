@@ -44,7 +44,7 @@ StateTable={
    ReadingTopMenu="ReadingTopMenu",
    DrawingTopMenu="DrawingTopMenu",
    DrawingRearMenu="DrawingRearMenu",
-   ReadingBottomMenu="ReadingRearMenu"   
+   ReadingRearMenu="ReadingRearMenu"   
 }
 
 local State=StateTable.DrawingShapes
@@ -84,11 +84,15 @@ function setupMandala()
       playdate.datastore.write(GameConfig)
       State = StateTable.DrawingTopMenu
    else
-      GameConfigAtStart=table.deepcopy(GameConfig)      
+      GameConfigAtStart=table.deepcopy(GameConfig)
+      FrontShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
+      RearShapeKey = FrontShapeKey
+      if GameConfig["rearshape"] ~= nil then
+	 RearShapeKey = SearchTableByPrompt(GameConfig["rearshape"],MandalaGFX)
+      end      
       State = StateTable.DrawingShapes      
    end
    
-
    
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingTopMenu end)
@@ -103,10 +107,10 @@ end
 -- Remove moving sprite from screen
 function deleteOldMandala(frontkey,rearkey)
    MandalaGFX[frontkey][2]:remove()
-   if rearkey ~= nil then
+--[[   if rearkey ~= nil then
       MandalaGFX[rearkey][1]:clear(gfx.kColorWhite)
    end
-   
+]]   
 end
 
 -- Draw new moving sprite on screen
@@ -114,11 +118,13 @@ function drawNewMandala(frontkey,rearkey)
    MandalaGFX[frontkey][2]:moveTo(200,120)
    MandalaGFX[frontkey][2]:add()
    MandalaGFX[frontkey][2]:setCenter(0.5,GameConfig.offset)
+   --[[
    if rearkey ~= nil then
       MandalaGFX[rearkey][1]:draw(0,0,GameConfig.imageflip)
    else      
       MandalaGFX[frontkey][1]:draw(0,0,GameConfig.imageflip)
-   end   
+   end '
+   ]]  
 end
 
 ----------------------------- Main Line starts Here ----------------------------------------------
@@ -130,7 +136,7 @@ setupMandala()
 function playdate.update()
    do      
       if debugPrinted > 60 then
-	 print("State:",StateTable[State])
+	 print("State:",StateTable[State],"Front:",MandalaGFX[FrontShapeKey].prompt,"Rear:",MandalaGFX[RearShapeKey].prompt)
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
@@ -179,14 +185,20 @@ function playdate.update()
 	 gfx.clear()
 	 local topChoice=MandalaGFX[1].prompt
 	 if GameConfig["rearshape"] ~= nil then
-	    topChoice=MandalaGFX[GameConfig["rearshape"]]
-	 end	 
+	    topChoice=GameConfig["rearshape"]
+	 end
+	 if debugPrinted > 60 then
+	    print("topChoice:",topChoice)
+	 end
+	 
 	 editConfigurationSetup(MandalaGFX,"Rear Shape",topChoice)
 	 State = StateTable.ReadingRearMenu
+	 
       elseif State == StateTable.ReadingRearMenu then
 	 local currentRearChoice
+
 	 currentRearChoice=editConfiguration()
-	 
+	 print("currentRearChoice:",currentRearChoice)
 	 if currentRearChoice ~= nil then
 	    deleteOldMandala(FrontShapeKey,RearShapeKey)
 	    RearShapeKey=SearchTableByPrompt(currentRearChoice,MandalaGFX)
@@ -195,6 +207,7 @@ function playdate.update()
 	    drawNewMandala(FrontShapeKey,RearShapeKey)
 	    State=StateTable.DrawingShapes
 	 end
+	 
       elseif State == StateTable.DrawingTopMenu then
 	 gfx.clear()
 	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)

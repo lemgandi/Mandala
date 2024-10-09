@@ -168,7 +168,7 @@ end
 function editConfiguration()
    local retVal
    
-   if playdate.buttonIsPressed(playdate.kButtonA) then      
+   if playdate.buttonJustPressed(playdate.kButtonA) then      
       retVal = Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
