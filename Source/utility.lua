@@ -18,18 +18,18 @@
 ]]
 
 -- Write config data iff dirty
-function writeConfiguration()
+function writeConfiguration(old,new)
    local dirtyFlag=false
 
-   for kk,vv in pairs(GameConfig) do
-      if GameConfigAtStart[kk] ~= vv then
+   for kk,vv in pairs(new) do
+      if old[kk] ~= vv then
 	 dirtyFlag=true
       end
    end
 
    if dirtyFlag then
-      playdate.datastore.write(GameConfig)
-      GameConfigAtStart = table.deepcopy(GameConfig)      
+      playdate.datastore.write(new)
+      old = table.deepcopy(new)      
    end
    
 end
@@ -45,18 +45,14 @@ function CompareMenuTableEntries(vf,vs)
 end
 
 -- Find a table entry by its prompt from menu
-function searchTableByPrompt(p,t)
+function SearchTableByPrompt(p,t)
+   local retVal = nil
    for kk,vv in pairs(t) do
       if vv.prompt == p then
-	 return kk
+	 retVal = kk
+	 break
       end
-   end   
+   end
+   return retVal
 end
 
-function SearchMenuTable(p,t)
-   for kk,vv in pairs(t) do
-      if vv.prompt == p then
-	 return kk
-      end
-   end   
-end

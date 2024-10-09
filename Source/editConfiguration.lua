@@ -41,7 +41,7 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    local oldChoice=1
    
    if currentChoice ~= nil then
-      oldChoice=SearchMenuTable(currentChoice,choices)
+      oldChoice=SearchTableByPrompt(currentChoice,choices)
    end
    
    local banner="Front Shape"

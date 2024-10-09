@@ -35,29 +35,29 @@ MandalaGFX = {}
 local CurrentRotation = 1
 -- local ShapeName="Line"
 ShapeKey=nil
-local CurrentChoice=nil
-StateTable={DrawingShapes="DrawingShapes",ReadingMenus="ReadingMenus"}
+
+StateTable={
+   DrawingShapes="DrawingShapes",
+   ReadingFrontMenu="ReadingFrontMenu",
+   DrawingFrontMenu="DrawingFrontMenu",
+   ReadingTopMenu="ReadingTopMenu",
+   DrawingTopMenu="DrawingTopMenu",
+   DrawingBottomMenu="DrawingBottomMenu",
+   ReadingBottomMenu="ReadingBottomMenu"   
+}
 
 State=StateTable.DrawingShapes
 
-menuState={TopShape="TopShape",
-	   BottomShape="BottomShape",
-	   Offset="Offset",
-	   ScaleBottomShape="ScaleBottomShape",
-	   End="End"}
-
-menuTable={
-   {prompt='Choose Top Shape',returns=menuState.TopShape},
-   {prompt='Choose Bottom Shape',returns=menuState.BottomShape},
-   {prompt='Set Offset',returns=menuState.Offset},
-   {prompt='Scale Bottom Shape', returns=menuState.ScaleBottomShape}
+TopMenuTable={
+   {prompt='Choose Top Shape',nextState=StateTable.DrawingFrontMenu},
+   {prompt='Choose Bottom Shape',nextState=StateTable.DrawingBottomMenu}
 }
 
 -- In global table
 EditingConfig=false
 
-GameConfig = {}
-GameConfigAtStart = {}
+local GameConfig = {}
+local GameConfigAtStart = {}
 
 local debugPrinted=0
 
@@ -69,27 +69,30 @@ function setupMandala()
 
    MandalaGFX=makeGFXTable(ImageDir)
    --   testGFXTable()
-   -- testSearchMenuTable()
+   -- testSearchTableByPrompt()
    
    GameConfig = playdate.datastore.read()
       
    if nil == GameConfig then
       GameConfig={}
-      GameConfig["which"]="Line"
+      GameConfig["frontshape"]="Line"
       GameConfig["offset"]=0.5
       GameConfig["crankticks"]=180
       GameConfig["imageflip"]=gfx.kImageUnflipped
+      writeConfiguration(GameConfigAtStart,GameConfig)
       playdate.datastore.write(GameConfig)
-      State = StateTable.DrawingMenus
+      State = StateTable.DrawingTopMenu
    else
+      GameConfigAtStart=table.deepcopy(GameConfig)      
       State = StateTable.DrawingShapes      
    end
    
-   GameConfigAtStart=table.deepcopy(GameConfig)      
-   local menu=playdate.getSystemMenu()
-   menu:addMenuItem("Configure",function() State=StateTable.DrawingMenus end)
+
    
-   ShapeKey=SearchMenuTable(GameConfig["which"],MandalaGFX)
+   local menu=playdate.getSystemMenu()
+   menu:addMenuItem("Configure",function() State=StateTable.DrawingTopMenu end)
+   
+   ShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
    
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
@@ -118,7 +121,7 @@ setupMandala()
 function playdate.update()
    do      
       if debugPrinted > 60 then
-	 print("State:",StateTable[State],"CurrentChoice:",CurrentChoice)
+	 print("State:",StateTable[State])
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
@@ -134,21 +137,32 @@ function playdate.update()
 	 end      
 	 gfx.sprite.update()
 	 MandalaGFX[ShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
-      elseif State == StateTable.ReadingMenus then
-	 
-	 CurrentChoice = editConfiguration()
-	 if (CurrentChoice ~= nil) and (CurrentChoice ~= MandalaGFX[ShapeKey].prompt) then
+      elseif State == StateTable.ReadingFrontMenu then
+	 local currentChoice
+	 currentChoice = editConfiguration()
+	 if (currentChoice ~= nil) and (currentChoice ~= MandalaGFX[ShapeKey].prompt) then
 	    deleteOldMandala(ShapeKey)	    
-	    ShapeKey = SearchMenuTable(CurrentChoice,MandalaGFX)	    
-	    GameConfig["which"] = CurrentChoice
-	    writeConfiguration()	    
+	    ShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
+	    GameConfig["frontshape"] = currentChoice
+	    writeConfiguration(GameConfigAtStart,GameConfig)	    
 	    drawNewMandala(ShapeKey)
 	    State=StateTable.DrawingShapes
+	 end
+      elseif State == StateTable.ReadingTopMenu then
+	 local chosenPrompt	 
+	 chosenPrompt = editConfiguration()
+	 if (chosenPrompt ~= nil) then
+	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
+	    State=TopMenuTable[menuChoice].nextState
 	 end	 
-      elseif State == StateTable.DrawingMenus then
-	 playdate.graphics.clear()   
-	 editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["which"])
-	 State=StateTable.ReadingMenus	 
+      elseif State == StateTable.DrawingFrontMenu then
+	 gfx.clear()   
+	 editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["frontshape"])
+	 State=StateTable.ReadingFrontMenu
+      elseif State == StateTable.DrawingTopMenu then
+	 gfx.clear()
+	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
+	 State=StateTable.ReadingTopMenu
       end      
    end   
 end
