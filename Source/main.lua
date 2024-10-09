@@ -34,7 +34,8 @@ MandalaGFX = {}
 
 local CurrentRotation = 1
 -- local ShapeName="Line"
-ShapeKey=nil
+FrontShapeKey=nil
+RearShapeKey=nil
 
 StateTable={
    DrawingShapes="DrawingShapes",
@@ -42,15 +43,15 @@ StateTable={
    DrawingFrontMenu="DrawingFrontMenu",
    ReadingTopMenu="ReadingTopMenu",
    DrawingTopMenu="DrawingTopMenu",
-   DrawingBottomMenu="DrawingRearMenu",
+   DrawingRearMenu="DrawingRearMenu",
    ReadingBottomMenu="ReadingRearMenu"   
 }
 
 local State=StateTable.DrawingShapes
 
 TopMenuTable={
-   {prompt='Choose Top Shape',nextState=StateTable.DrawingFrontMenu},
-   {prompt='Choose Bottom Shape',nextState=StateTable.DrawingRearMenu}
+   {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
+   {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu}
 }
 
 -- In global table
@@ -92,24 +93,32 @@ function setupMandala()
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingTopMenu end)
    
-   ShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
+   FrontShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
    
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
-   drawNewMandala(ShapeKey)   
+   drawNewMandala(FrontShapeKey,RearShapeKey)   
 end
 
 -- Remove moving sprite from screen
-function deleteOldMandala(key)
-   MandalaGFX[key][2]:remove()
+function deleteOldMandala(frontkey,rearkey)
+   MandalaGFX[frontkey][2]:remove()
+   if rearkey ~= nil then
+      MandalaGFX[rearkey][1]:clear(gfx.kColorWhite)
+   end
+   
 end
 
 -- Draw new moving sprite on screen
-function drawNewMandala(key)
-   MandalaGFX[key][2]:moveTo(200,120)
-   MandalaGFX[key][2]:add()
-   MandalaGFX[key][2]:setCenter(0.5,GameConfig.offset)
-   MandalaGFX[key][1]:draw(0,0,GameConfig.imageflip)   
+function drawNewMandala(frontkey,rearkey)
+   MandalaGFX[frontkey][2]:moveTo(200,120)
+   MandalaGFX[frontkey][2]:add()
+   MandalaGFX[frontkey][2]:setCenter(0.5,GameConfig.offset)
+   if rearkey ~= nil then
+      MandalaGFX[rearkey][1]:draw(0,0,GameConfig.imageflip)
+   else      
+      MandalaGFX[frontkey][1]:draw(0,0,GameConfig.imageflip)
+   end   
 end
 
 ----------------------------- Main Line starts Here ----------------------------------------------
@@ -133,26 +142,33 @@ function playdate.update()
 
 	 if crankTicks ~= 0 then
 	    CurrentRotation = CurrentRotation + crankTicks	 
-	    MandalaGFX[ShapeKey][2]:setRotation(CurrentRotation)
+	    MandalaGFX[FrontShapeKey][2]:setRotation(CurrentRotation)
 	 end      
 	 gfx.sprite.update()
-	 MandalaGFX[ShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 if RearShapeKey ~= nil then
+	    MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 else	    
+	    MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 end	 
       elseif State == StateTable.ReadingFrontMenu then
 	 local currentChoice
 	 currentChoice = editConfiguration()
-	 if (currentChoice ~= nil) and (currentChoice ~= MandalaGFX[ShapeKey].prompt) then
-	    deleteOldMandala(ShapeKey)	    
-	    ShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
-	    GameConfig["frontshape"] = currentChoice
-	    writeConfiguration(GameConfigAtStart,GameConfig)	    
-	    drawNewMandala(ShapeKey)
-	    State=StateTable.DrawingShapes
+	 if (currentChoice ~= nil) then
+	    deleteOldMandala(FrontShapeKey,RearShapeKey)
+	    if currentChoice ~= MandalaGFX[FrontShapeKey].prompt then
+	       FrontShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
+	       GameConfig["frontshape"] = currentChoice
+	       writeConfiguration(GameConfigAtStart,GameConfig)	    
+	    end
+	    drawNewMandala(FrontShapeKey,RearShapeKey)
+	    State = StateTable.DrawingShapes
 	 end
       elseif State == StateTable.ReadingTopMenu then
 	 local chosenPrompt	 
 	 chosenPrompt = editConfiguration()
 	 if (chosenPrompt ~= nil) then
 	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
+	    print("chosenPrompt:",chosenPrompt,"menuChoice:",menuChoice,"State:",TopMenuTable[menuChoice].nextState)
 	    State=TopMenuTable[menuChoice].nextState
 	 end	 
       elseif State == StateTable.DrawingFrontMenu then
@@ -168,12 +184,17 @@ function playdate.update()
 	 editConfigurationSetup(MandalaGFX,"Rear Shape",topChoice)
 	 State = StateTable.ReadingRearMenu
       elseif State == StateTable.ReadingRearMenu then
-	 local currentChoice
-	 currentChoice=editConfiguration()
-	 if currentChoice ~= nil then
-	    
+	 local currentRearChoice
+	 currentRearChoice=editConfiguration()
+	 
+	 if currentRearChoice ~= nil then
+	    deleteOldMandala(FrontShapeKey,RearShapeKey)
+	    RearShapeKey=SearchTableByPrompt(currentRearChoice,MandalaGFX)
+	    GameConfig["rearshape"]=currentRearChoice
+	    writeConfiguration(GameConfigAtStart,GameConfig)
+	    drawNewMandala(FrontShapeKey,RearShapeKey)
+	    State=StateTable.DrawingShapes
 	 end
-	 State = StateTable.DrawingShapes
       elseif State == StateTable.DrawingTopMenu then
 	 gfx.clear()
 	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)

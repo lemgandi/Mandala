@@ -49,8 +49,6 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    local w,h
    local yLocation=YTop
    
-   print("oldChoice:",oldChoice,"prompt:",choices[oldChoice].prompt)
-   
    gfx.setFont(fileFont)
    Choices = choices      
    CurrentOnScreenTop=1
@@ -168,9 +166,10 @@ end
 -- Display and move cursor, return current value at cursor when kButtonB is pressed.
 -- 
 function editConfiguration()
+   local retVal
    
    if playdate.buttonIsPressed(playdate.kButtonA) then      
-      return Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
+      retVal = Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
 	 drawCursor(CurrentSlot + 1,CurrentSlot)
@@ -191,4 +190,6 @@ function editConfiguration()
    elseif playdate.buttonJustPressed(playdate.kButtonB) then
       print("Current Shape:",Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt)
    end
+
+   return retVal
 end
