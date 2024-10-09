@@ -17,6 +17,23 @@
 
 ]]
 
+-- Write config data iff dirty
+function writeConfiguration()
+   local dirtyFlag=false
+
+   for kk,vv in pairs(GameConfig) do
+      if GameConfigAtStart[kk] ~= vv then
+	 dirtyFlag=true
+      end
+   end
+
+   if dirtyFlag then
+      playdate.datastore.write(GameConfig)
+      GameConfigAtStart = table.deepcopy(GameConfig)      
+   end
+   
+end
+
 
 -- Are two GFXTable entries equivalent (for sort by prompt)
 function CompareMenuTableEntries(vf,vs)

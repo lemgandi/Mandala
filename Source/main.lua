@@ -56,36 +56,12 @@ menuTable={
 -- In global table
 EditingConfig=false
 
-local GameConfig
-local GameConfigAtStart
+GameConfig = {}
+GameConfigAtStart = {}
 
 local debugPrinted=0
 
--- Simple copy to reserve table so we can see if current GameState table is Dirty
-function deepcopy(src)
-   local dest={}
-   for kk,vv in pairs(src) do
-      dest[kk] = vv
-   end
-   return dest
-end
 
--- Write config data iff dirty
-function writeConfiguration()
-   local dirtyFlag=false
-
-   for kk,vv in pairs(GameConfig) do
-      if GameConfigAtStart[kk] ~= vv then
-	 dirtyFlag=true
-      end
-   end
-
-   if dirtyFlag then
-      playdate.datastore.write(GameConfig)
-      GameConfigAtStart = deepcopy(GameConfig)      
-   end
-   
-end
 
 -- Set up before update calls
    
@@ -103,14 +79,13 @@ function setupMandala()
       GameConfig["offset"]=0.5
       GameConfig["crankticks"]=180
       GameConfig["imageflip"]=gfx.kImageUnflipped
-      GameConfigAtStart=deepcopy(GameConfig)
       playdate.datastore.write(GameConfig)
       State = StateTable.DrawingMenus
    else
-      GameConfigAtStart = deepcopy(GameConfig)
       State = StateTable.DrawingShapes      
    end
-      
+   
+   GameConfigAtStart=table.deepcopy(GameConfig)      
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingMenus end)
    
