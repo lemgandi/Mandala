@@ -169,8 +169,7 @@ end
 -- 
 function editConfiguration()
    
-   if playdate.buttonIsPressed(playdate.kButtonB) then      
-      State = StateTable.DrawingShapes
+   if playdate.buttonIsPressed(playdate.kButtonA) then      
       return Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
@@ -189,7 +188,7 @@ function editConfiguration()
 	 drawCursor(1,CurrentSlot)
 	 CurrentSlot = 1
       end
-   elseif playdate.buttonJustPressed(playdate.kButtonA) then
+   elseif playdate.buttonJustPressed(playdate.kButtonB) then
       print("Current Shape:",Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt)
    end
 end
