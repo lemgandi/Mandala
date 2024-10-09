@@ -42,15 +42,15 @@ StateTable={
    DrawingFrontMenu="DrawingFrontMenu",
    ReadingTopMenu="ReadingTopMenu",
    DrawingTopMenu="DrawingTopMenu",
-   DrawingBottomMenu="DrawingBottomMenu",
-   ReadingBottomMenu="ReadingBottomMenu"   
+   DrawingBottomMenu="DrawingRearMenu",
+   ReadingBottomMenu="ReadingRearMenu"   
 }
 
-State=StateTable.DrawingShapes
+local State=StateTable.DrawingShapes
 
 TopMenuTable={
    {prompt='Choose Top Shape',nextState=StateTable.DrawingFrontMenu},
-   {prompt='Choose Bottom Shape',nextState=StateTable.DrawingBottomMenu}
+   {prompt='Choose Bottom Shape',nextState=StateTable.DrawingRearMenu}
 }
 
 -- In global table
@@ -159,6 +159,21 @@ function playdate.update()
 	 gfx.clear()   
 	 editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["frontshape"])
 	 State=StateTable.ReadingFrontMenu
+      elseif State == StateTable.DrawingRearMenu then
+	 gfx.clear()
+	 local topChoice=MandalaGFX[1].prompt
+	 if GameConfig["rearshape"] ~= nil then
+	    topChoice=MandalaGFX[GameConfig["rearshape"]]
+	 end	 
+	 editConfigurationSetup(MandalaGFX,"Rear Shape",topChoice)
+	 State = StateTable.ReadingRearMenu
+      elseif State == StateTable.ReadingRearMenu then
+	 local currentChoice
+	 currentChoice=editConfiguration()
+	 if currentChoice ~= nil then
+	    
+	 end
+	 State = StateTable.DrawingShapes
       elseif State == StateTable.DrawingTopMenu then
 	 gfx.clear()
 	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
