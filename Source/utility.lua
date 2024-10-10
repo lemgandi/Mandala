@@ -20,13 +20,20 @@
 -- Write config data iff dirty
 function writeConfiguration(old,new)
    local dirtyFlag=false
-
+   
    for kk,vv in pairs(new) do
       if old[kk] ~= vv then
 	 dirtyFlag=true
       end
    end
-
+   
+-- Check for deleted keys in new config table e.g. rearshapekey   
+   for kk in pairs(old) do
+      if new[kk] == nil then
+	 dirtyFlag = true
+      end
+   end
+   
    if dirtyFlag then
       playdate.datastore.write(new)
       old = table.deepcopy(new)      
