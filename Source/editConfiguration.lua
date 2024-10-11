@@ -27,7 +27,7 @@ local CurrentOnScreenTop=1
 local YTop=24
 local XLeft=30
 local YStep=24
-local ScrollAreaLinesMinusOne=7
+local ScrollAreaLines = 8
 local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
 local CurrentSlot=1
 local Choices
@@ -53,21 +53,21 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    Choices = choices      
    CurrentOnScreenTop=1
    
-   if #Choices > ScrollAreaLinesMinusOne+1 then
-      displayChoices(CurrentOnScreenTop,ScrollAreaLinesMinusOne+1)
+   if #Choices > ScrollAreaLines then
+      displayChoices(CurrentOnScreenTop,ScrollAreaLines)
    else
       displayChoices(CurrentOnScreenTop,#Choices)
    end
    
-   if oldChoice < ScrollAreaLinesMinusOne + 1
+   if oldChoice < ScrollAreaLines
    then
       CurrentSlot=oldChoice
    else
-      local numberOfScrolls=oldChoice - (ScrollAreaLinesMinusOne + 1)
+      local numberOfScrolls=oldChoice - ScrollAreaLines
       for kk=1,numberOfScrolls do
 	 scroll(true)
       end
-      CurrentSlot=(ScrollAreaLinesMinusOne + 1)
+      CurrentSlot = ScrollAreaLines
    end
    
    drawCursor(CurrentSlot)
@@ -116,15 +116,15 @@ function scroll(updown)
 
    if updown == true then
       
-      if #Choices > (CurrentOnScreenTop + ScrollAreaLinesMinusOne) then
+      if #Choices > (CurrentOnScreenTop + (ScrollAreaLines - 1)) then
 	 clearScrollArea()
-	 displayChoices(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLinesMinusOne+1)
+	 displayChoices(CurrentOnScreenTop+1,CurrentOnScreenTop + ScrollAreaLines)
 	 CurrentOnScreenTop = CurrentOnScreenTop + 1	 
       end      
    else
       if CurrentOnScreenTop > 1 then	    
 	 clearScrollArea()
-	 displayChoices(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLinesMinusOne-1)
+	 displayChoices(CurrentOnScreenTop-1,CurrentOnScreenTop + ScrollAreaLines - 2)
 	 CurrentOnScreenTop = CurrentOnScreenTop - 1	 	 	 
       end	 
    end      						 
@@ -171,12 +171,14 @@ function editConfiguration()
    if playdate.buttonJustPressed(playdate.kButtonA) then      
       retVal = Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
-      if(CurrentSlot < ScrollAreaLinesMinusOne + 1) then
-	 drawCursor(CurrentSlot + 1,CurrentSlot)
-	 CurrentSlot = CurrentSlot + 1
+      if(CurrentSlot < ScrollAreaLines) then
+	 if CurrentSlot < #Choices then
+	    drawCursor(CurrentSlot + 1,CurrentSlot)
+	    CurrentSlot = CurrentSlot + 1
+	 end      
       else
 	 scroll(true)
-	 drawCursor((ScrollAreaLinesMinusOne + 1),ScrollAreaLinesMinusOne)
+	 drawCursor(ScrollAreaLines,(ScrollAreaLines - 1))
       end      	 
    elseif playdate.buttonJustPressed(playdate.kButtonUp) then
       if CurrentSlot > 1 then
