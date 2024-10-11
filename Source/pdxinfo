@@ -2,5 +2,5 @@ name=Mandala
 author=Charles Shapiro
 description=Moving mandala viewer for playdate
 bundleID=org.tomshiro.mandala
-imagePath=Support/Images
+imagePath=Images
 version=0.0.0

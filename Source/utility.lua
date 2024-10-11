@@ -63,3 +63,16 @@ function SearchTableByPrompt(p,t)
    return retVal
 end
 
+
+-- Draw a banner indicating what menu we are on
+function DrawBanner(banner,bannerBottom,leftJ)
+   
+   local currentColor=gfx.getColor()
+   
+   gfx.setColor(gfx.kColorBlack)
+   gfx.fillRect(0,0,400,bannerBottom)
+   gfx.setColor(gfx.kColorXOR)
+   gfx.drawText(banner,leftJ,0)
+   gfx.setColor(currentColor)
+
+end

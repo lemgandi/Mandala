@@ -37,7 +37,7 @@ local Choices
 -- cursor is currently pointing when kButtonB is pressed.
 function editConfigurationSetup(choices,menuname,currentChoice)
    
-   local fileFont=gfx.font.new('Resources/configFont/Roobert-20-Medium')
+   local fileFont
    local oldChoice=1
    
    if currentChoice ~= nil then
@@ -48,8 +48,7 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    
    local w,h
    local yLocation=YTop
-   
-   gfx.setFont(fileFont)
+  
    Choices = choices      
    CurrentOnScreenTop=1
    
@@ -71,22 +70,9 @@ function editConfigurationSetup(choices,menuname,currentChoice)
    end
    
    drawCursor(CurrentSlot)
-   drawBanner(menuname)
+   DrawBanner(menuname,YStep,XLeft)
 end
 
-
--- Draw the banner indicating what menu we are on
-function drawBanner(banner)
-      
-   local currentColor=gfx.getColor()
-   
-   gfx.setColor(gfx.kColorBlack)
-   gfx.fillRect(0,0,400,YStep)
-   gfx.setColor(gfx.kColorXOR)
-   gfx.drawText(banner,XLeft,0)
-   gfx.setColor(currentColor)
-
-end
 
 -- Prepare to Scroll!
 function clearScrollArea()

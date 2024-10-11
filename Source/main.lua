@@ -28,6 +28,7 @@ import "CoreLibs/object"
 import "makeGFXTable"
 import "editConfiguration"
 import "utility"
+import "changeMandalaCenter"
 
 gfx = playdate.graphics
 ImageDir="Images/shapes/"
@@ -46,14 +47,17 @@ local StateTable={
    ReadingTopMenu="ReadingTopMenu",
    DrawingTopMenu="DrawingTopMenu",
    DrawingRearMenu="DrawingRearMenu",
-   ReadingRearMenu="ReadingRearMenu"   
+   ReadingRearMenu="ReadingRearMenu",
+   DrawingCenterChange="DrawingCenterChange",
+   ReadingCenterChange="ReadingCenterChange"
 }
 
 local State=StateTable.DrawingShapes
 
 local TopMenuTable={
    {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
-   {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu}
+   {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu},
+   {prompt="Change Center",nextState=StateTable.DrawingCenterChange}
 }
 
 local GameConfig = {}
@@ -88,6 +92,9 @@ function setupMandala()
    --   testGFXTable()
    -- testSearchTableByPrompt()
    
+   local allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
+   gfx.setFont(allFont)
+
    GameConfig = playdate.datastore.read()
       
    if nil == GameConfig then
@@ -222,6 +229,21 @@ function playdate.update()
 	 gfx.clear()
 	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
 	 State=StateTable.ReadingTopMenu
+      elseif State == StateTable.DrawingCenterChange then
+	 gfx.clear()
+	 SetupCenterChangeScreen(GameConfig["offset"])
+	 State = StateTable.ReadingCenterChange
+      elseif State == StateTable.ReadingCenterChange then
+	 local centerPct
+	 centerPct = ReadCenterChangeScreen()
+	 if centerPct ~= nil then
+	    print(centerPct)
+	    GameConfig["offset"] = centerPct
+	    writeConfiguration(GameConfigAtStart,GameConfig)
+	    drawNewMandala(FrontShapeKey,RearShapeKey)
+	    State = StateTable.DrawingShapes
+	 end
+	 
       end      
    end   
 end
