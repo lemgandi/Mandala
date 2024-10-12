@@ -174,14 +174,18 @@ function playdate.update()
 	 local currentChoice
 	 currentChoice = editConfiguration()
 	 if (currentChoice ~= nil) then
-	    deleteOldMandala(FrontShapeKey)
-	    if currentChoice ~= MandalaGFX[FrontShapeKey].prompt then
-	       FrontShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
-	       GameConfig["frontshape"] = currentChoice
-	       writeConfiguration(GameConfigAtStart,GameConfig)	    
-	    end
-	    drawNewMandala(FrontShapeKey,RearShapeKey)
-	    State = StateTable.DrawingShapes
+	    if currentChoice == playdate.kButtonB then
+	       State = StateTable.DrawingTopMenu
+	    else	       
+	       deleteOldMandala(FrontShapeKey)
+	       if currentChoice ~= MandalaGFX[FrontShapeKey].prompt then
+		  FrontShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
+		  GameConfig["frontshape"] = currentChoice
+		  writeConfiguration(GameConfigAtStart,GameConfig)	    
+	       end
+	       drawNewMandala(FrontShapeKey,RearShapeKey)
+	       State = StateTable.DrawingShapes
+	    end	    
 	 end
       elseif State == StateTable.ReadingTopMenu then
 	 local chosenPrompt	 
@@ -212,18 +216,23 @@ function playdate.update()
 	 currentRearChoice=editConfiguration()
 
 	 if currentRearChoice ~= nil then
-	    RemoveNilChoice(MandalaGFX,NilRearPrompt)	    
-	    deleteOldMandala(FrontShapeKey)
-	    RearShapeKey=SearchTableByPrompt(currentRearChoice,MandalaGFX)
-	    if currentRearChoice == NilRearPrompt then
-	       RearShapeKey = nil
-	       GameConfig["rearshape"] = nil
-	    else	       
-	       GameConfig["rearshape"]=currentRearChoice
-	    end	    
-	    writeConfiguration(GameConfigAtStart,GameConfig)
-	    drawNewMandala(FrontShapeKey,RearShapeKey)
-	    State=StateTable.DrawingShapes
+	    if currentRearChoice == playdate.kButtonB then
+	       RemoveNilChoice(MandalaGFX,NilRearPrompt)
+	       State=StateTable.DrawingTopMenu
+	    else
+	       RemoveNilChoice(MandalaGFX,NilRearPrompt)	    
+	       deleteOldMandala(FrontShapeKey)
+	       RearShapeKey = SearchTableByPrompt(currentRearChoice,MandalaGFX)
+	       if currentRearChoice == NilRearPrompt then
+		  RearShapeKey = nil
+		  GameConfig["rearshape"] = nil
+	       else	       
+		  GameConfig["rearshape"]=currentRearChoice
+	       end	    
+	       writeConfiguration(GameConfigAtStart,GameConfig)
+	       drawNewMandala(FrontShapeKey,RearShapeKey)
+	       State=StateTable.DrawingShapes
+	    end
 	 end
       elseif State == StateTable.DrawingTopMenu then
 	 gfx.clear()

@@ -31,7 +31,6 @@ local ScrollAreaLines = 8
 local Cursor={ x1=1,y1=1,x2=(XLeft-2)/2,y2=(YTop-2)/2,x3=1,y3=YTop-2 }
 local CurrentSlot=1
 local Choices
-
 -- Set screen up to display a menu. Menus consist of a table of tables. The table must be an integer keyed
 -- table, each entry in the table must contain a "prompt" member. This will return the prompt to which the
 -- cursor is currently pointing when kButtonB is pressed.
@@ -176,7 +175,7 @@ function editConfiguration()
 	 CurrentSlot = 1
       end
    elseif playdate.buttonJustPressed(playdate.kButtonB) then
-      print("Current Shape:",Choices[(CurrentOnScreenTop + CurrentSlot)-1].prompt)
+      retVal=playdate.kButtonB
    end
 
    return retVal
