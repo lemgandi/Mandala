@@ -22,6 +22,8 @@ import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/crank"
 import "CoreLibs/strict"
+import "CoreLibs/ui"
+
 -- for printTable()
 import "CoreLibs/object"
 
@@ -31,6 +33,7 @@ import "utility"
 import "changeMandalaCenter"
 
 gfx = playdate.graphics
+
 ImageDir="Images/shapes/"
 
 MandalaGFX = {}
@@ -69,7 +72,6 @@ local NilRearPrompt="Same as Front"
 
 -- Add nil choice to rear shape menu
 function InsertNilChoice(shapemenu,nilprompt)
-   print("Len before:",#shapemenu)
    local nilChoice={prompt=nilprompt,gfx.image.new(1,1),gfx.sprite.new()}
    table.insert(shapemenu,nilChoice)
 end
@@ -78,7 +80,6 @@ end
 function RemoveNilChoice(shapemenu,nilprompt)
    local nilChoice = SearchTableByPrompt(nilprompt,shapemenu)
    if nilChoice ~= nil then
-      print("Removing nil choice")
       shapemenu[nilChoice]=nil
    end   
 end
@@ -124,7 +125,8 @@ function setupMandala()
    
    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
 
-   drawNewMandala(FrontShapeKey,RearShapeKey)   
+   drawNewMandala(FrontShapeKey)
+   
 end
 
 -- Remove moving sprite from screen
@@ -134,8 +136,10 @@ end
 
 
 -- Draw new moving sprite on screen
-function drawNewMandala(frontkey,rearkey)
+-- Back is drawn in DrawingShapes state
+function drawNewMandala(frontkey)
    MandalaGFX[frontkey][2]:moveTo(200,120)
+   MandalaGFX[frontkey][2]:setRotation(1)
    MandalaGFX[frontkey][2]:add()
    MandalaGFX[frontkey][2]:setCenter(0.5,GameConfig.offset)
 
@@ -150,7 +154,7 @@ setupMandala()
 function playdate.update()
    do      
       if debugPrinted > 60 then
-	 print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey)
+	 -- print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey)
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
@@ -158,6 +162,7 @@ function playdate.update()
       
       
       if State == StateTable.DrawingShapes  then
+
 	 local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
 
 	 if crankTicks ~= 0 then
@@ -165,6 +170,7 @@ function playdate.update()
 	    MandalaGFX[FrontShapeKey][2]:setRotation(CurrentRotation)
 	 end      
 	 gfx.sprite.update()
+	 
 	 if RearShapeKey ~= nil then
 	    MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
 	 else	    
@@ -183,7 +189,7 @@ function playdate.update()
 		  GameConfig["frontshape"] = currentChoice
 		  writeConfiguration(GameConfigAtStart,GameConfig)	    
 	       end
-	       drawNewMandala(FrontShapeKey,RearShapeKey)
+	       drawNewMandala(FrontShapeKey)
 	       State = StateTable.DrawingShapes
 	    end	    
 	 end
@@ -192,7 +198,6 @@ function playdate.update()
 	 chosenPrompt = editConfiguration()
 	 if (chosenPrompt ~= nil) then
 	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
-	    print("chosenPrompt:",chosenPrompt,"menuChoice:",menuChoice,"State:",TopMenuTable[menuChoice].nextState)
 	    State=TopMenuTable[menuChoice].nextState
 	 end	 
       elseif State == StateTable.DrawingFrontMenu then
@@ -203,7 +208,6 @@ function playdate.update()
 	 gfx.clear()
 	 InsertNilChoice(MandalaGFX,NilRearPrompt)
 	 local topChoice=NilRearPrompt
-	 print("topChoice:",topChoice)
 	 if GameConfig["rearshape"] ~= nil then
 	    topChoice=GameConfig["rearshape"]
 	 end	 
@@ -230,7 +234,7 @@ function playdate.update()
 		  GameConfig["rearshape"]=currentRearChoice
 	       end	    
 	       writeConfiguration(GameConfigAtStart,GameConfig)
-	       drawNewMandala(FrontShapeKey,RearShapeKey)
+	       drawNewMandala(FrontShapeKey)
 	       State=StateTable.DrawingShapes
 	    end
 	 end
@@ -244,12 +248,11 @@ function playdate.update()
 	 State = StateTable.ReadingCenterChange
       elseif State == StateTable.ReadingCenterChange then
 	 local centerPct
-	 centerPct = ReadCenterChangeScreen()
+	 centerPct = ReadCenterChangeScreen(GameConfig)
 	 if centerPct ~= nil then
-	    print(centerPct)
 	    GameConfig["offset"] = centerPct
 	    writeConfiguration(GameConfigAtStart,GameConfig)
-	    drawNewMandala(FrontShapeKey,RearShapeKey)
+	    drawNewMandala(FrontShapeKey)
 	    State = StateTable.DrawingShapes
 	 end
 	 

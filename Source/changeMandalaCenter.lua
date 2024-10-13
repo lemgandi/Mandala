@@ -21,34 +21,69 @@ import "CoreLibs/strict"
 import "CoreLibs/graphics"
 
 gfx = playdate.graphics
--- geom = playdate.geometry
+geom = playdate.geometry
 
 -- 30 x 400 block in middle of screen
-local LineAreaTop=85
+local LineAreaTop=90
 local LineAreaSize = 61
 
+local Center=120
+local CursorLine
+local VPosition=Center
 
 function SetupCenterChangeScreen(currentOffset)
-   local limitRect = playdate.geometry.rect.new(0,LineAreaTop,400,LineAreaSize)
+   local limitRect = geom.rect.new(0,LineAreaTop,400,LineAreaSize)
    local banner="Up/Down to Change"
-
-   DrawBanner(banner,32,30)
    
+   DrawBanner(banner,32,30)
+   CursorLine=geom.lineSegment.new(0,VPosition,400,VPosition)
+   
+   gfx.setColor(gfx.kColorBlack)
    gfx.fillRect(limitRect)
+   gfx.setColor(gfx.kColorWhite)
+   gfx.drawLine(CursorLine)
    
 end
 
-function ReadCenterChangeScreen()
-   local retVal = nil
+-- Redraw cursor at new position
+function newPosition(line,newPosition)
+   gfx.setColor(gfx.kColorBlack)
+   gfx.drawLine(line)
+   line.y1 = newPosition
+   line.y2 = newPosition
+   gfx.setColor(gfx.kColorWhite)
+   gfx.drawLine(line)
+end
 
+-- Change rotation center of front sprite
+
+function ReadCenterChangeScreen(gc)
    
-   if playdate.buttonJustPressed(playdate.kButtonA) then
-      retVal = 0.512
-   elseif playdate.buttonJustPressed(playdate.kButtonB) then
-      retVal = 0.5
-      print("Recenter some day")
+   local retVal = nil
+   local ticks = playdate.getCrankTicks(gc.crankticks)
+   
+   if ticks ~= 0 then
+      if (VPosition + ticks > LineAreaTop) and (VPosition + ticks <  (LineAreaTop + LineAreaSize)) then
+	 VPosition = VPosition + ticks
+	 newPosition(CursorLine,VPosition)
+      end      
    end
-   
-					
+   					
+   if playdate.buttonJustPressed(playdate.kButtonA) then
+      retVal = 0.5
+   elseif playdate.buttonJustPressed(playdate.kButtonB) then
+      newPosition(CursorLine,Center)
+   elseif playdate.buttonJustPressed(playdate.kButtonUp) then
+      if VPosition - 1 > LineAreaTop then
+	 VPosition = VPosition - 1
+	 newPosition(CursorLine,VPosition)
+      end
+   elseif playdate.buttonJustPressed(playdate.kButtonDown) then
+      if VPosition + 1 < (LineAreaTop + LineAreaSize) then
+	 VPosition = VPosition + 1
+	 newPosition(CursorLine,VPosition)
+      end      
+   end
+  					
    return retVal
 end
