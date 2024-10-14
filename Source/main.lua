@@ -250,6 +250,7 @@ function playdate.update()
 	 local centerPct
 	 centerPct = ReadCenterChangeScreen(GameConfig)
 	 if centerPct ~= nil then
+	    centerPct = math.floor((centerPct*100) + 0.5) / 100
 	    GameConfig["offset"] = centerPct
 	    writeConfiguration(GameConfigAtStart,GameConfig)
 	    drawNewMandala(FrontShapeKey)

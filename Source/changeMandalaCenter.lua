@@ -57,22 +57,55 @@ end
 
 -- Change rotation center of front sprite
 
+function computePctFromCursor(cursorPosition)
+   
+   local pct = nil
+   
+   if cursorPosition > Center then
+      pct = ((cursorPosition - Center) + 50) / 100
+   elseif cursorPosition < Center then
+      pct= ((cursorPosition - LineAreaTop) + 50) / 100
+   else
+      pct = 0.5
+   end
+   print("computePctFromCursor Position:",cursorPosition,"Pct:",pct)
+   return pct
+end
+
+function computeCursorFromPct(pct)
+   local cp = nil
+   
+   if pct < 50 then
+      cp = ((pct + 50) * 100) + LineAreaTop
+   else
+      cp = ( (pct - 50) * 100) - Center
+   end
+   print("computeCursorFromPct pct:",pct,"Position:",cp)
+   return cp   
+end
+
+
 function ReadCenterChangeScreen(gc)
    
    local retVal = nil
    local ticks = playdate.getCrankTicks(gc.crankticks)
+
    
    if ticks ~= 0 then
-      if (VPosition + ticks > LineAreaTop) and (VPosition + ticks <  (LineAreaTop + LineAreaSize)) then
-	 VPosition = VPosition + ticks
+      if (VPosition + ticks > LineAreaTop) and (VPosition + ticks <  (LineAreaTop + LineAreaSize)) then	 
+	 local newPct
+	 newPct = computePctFromCursor(VPosition)	 
+	 computeCursorFromPct(newPct)
+	 
+	 VPosition = VPosition + ticks	 
 	 newPosition(CursorLine,VPosition)
       end      
    end
    					
    if playdate.buttonJustPressed(playdate.kButtonA) then
-      retVal = 0.5
+      retVal = computePctFromCursor(VPosition)
    elseif playdate.buttonJustPressed(playdate.kButtonB) then
-      newPosition(CursorLine,Center)
+	 newPosition(CursorLine,Center)
    elseif playdate.buttonJustPressed(playdate.kButtonUp) then
       if VPosition - 1 > LineAreaTop then
 	 VPosition = VPosition - 1
@@ -84,6 +117,8 @@ function ReadCenterChangeScreen(gc)
 	 newPosition(CursorLine,VPosition)
       end      
    end
-  					
+   if retVal ~= nil then
+      gfx.setColor(gfx.kColorBlack)
+   end   
    return retVal
 end
