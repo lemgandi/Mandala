@@ -24,6 +24,7 @@ clean:
 compile: $(GAME).pdx
 
 dist:   $(GAME).pdx $(GAMERESOURCES)
+	rm ${GAME}.zip
 	zip -r ${GAME}.zip ${GAME}.pdx/*
 
 $(GAME).pdx : $(GAMESRC) 

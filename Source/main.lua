@@ -34,7 +34,7 @@ import "changeMandalaCenter"
 
 gfx = playdate.graphics
 
-ImageDir="Images/shapes/"
+ImageDir="Resources/shapes/"
 
 MandalaGFX = {}
 
