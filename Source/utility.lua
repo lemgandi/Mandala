@@ -35,7 +35,7 @@ function writeConfiguration(old,new)
    end
    
    if dirtyFlag then
-      playdate.datastore.write(new)
+      playdate.datastore.write(new)      
       old = table.deepcopy(new)      
    end
    

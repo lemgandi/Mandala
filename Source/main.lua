@@ -65,6 +65,7 @@ local TopMenuTable={
 
 local GameConfig = {}
 local GameConfigAtStart = {}
+local OldFN = "old_data"
 
 local debugPrinted=0
 
@@ -82,6 +83,35 @@ function RemoveNilChoice(shapemenu,nilprompt)
    if nilChoice ~= nil then
       shapemenu[nilChoice]=nil
    end   
+end
+
+-- Save config file to reserve
+function SaveOldConfiguration()
+   playdate.datastore.write(GameConfig,OldFN,false)
+end
+
+-- Restore config file from reserve
+function RestoreOldConfiguration()
+   
+   local oldTable = playdate.datastore.read(OldFN)
+   printTable(oldTable)
+   if oldTable ~= nil then
+      gfx.clear()
+      GameConfig = table.deepcopy(oldTable)
+      FrontShapeKey = SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
+      if GameConfig["rearshape"] ~= nil then
+	 RearShapeKey = SearchTablebyPrompt(GameConfig["rearshape"],MandalaGFX)
+      else
+	 RearShapeKey = nil
+      end
+      if RearShapeKey ~= nil then
+	 MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+      else	    
+	 MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+      end	       
+      drawNewMandala(FrontShapeKey)
+   end
+   
 end
 
 
@@ -120,6 +150,8 @@ function setupMandala()
    
    local menu=playdate.getSystemMenu()
    menu:addMenuItem("Configure",function() State=StateTable.DrawingTopMenu end)
+   menu:addMenuItem("Save Config",SaveOldConfiguration)
+   menu:addMenuItem("Rstore Cnfig",RestoreOldConfiguration)
    
    FrontShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
    
@@ -196,7 +228,7 @@ function playdate.update()
       elseif State == StateTable.ReadingTopMenu then
 	 local chosenPrompt	 
 	 chosenPrompt = editConfiguration()
-	 if (chosenPrompt ~= nil) then
+	 if (chosenPrompt ~= nil) and (chosenPrompt ~= playdate.kButtonB) then
 	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
 	    State=TopMenuTable[menuChoice].nextState
 	 end	 
