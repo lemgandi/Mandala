@@ -63,8 +63,7 @@ function computePctFromCursor(cursorPosition)
    local pct = nil
       
    pct = ((cursorPosition - Center) + 50) / 100
-   
-   print("computePctFromCursor Position:",cursorPosition,"Pct:",pct)
+  
    return pct
 end
 
@@ -72,15 +71,9 @@ end
 
 function computeCursorFromPct(pct)
    local cp = nil
-   
-   if pct < 50 then
-      cp = pct + LineAreaTop
-   elseif pct > 50 then
-      cp = (pct - 50) + Center
-   else
-      cp = Center
-   end
-   print("computeCursorFromPct pct:",pct,"Position:",cp)
+
+   cp = ((pct * 100) - 50) + Center
+
    return cp   
 end
 
@@ -90,10 +83,13 @@ function ReadCenterChangeScreen(gc)
    
    local retVal = nil
    local ticks = playdate.getCrankTicks(gc.crankticks)
-
    
    if ticks ~= 0 then
-      if (VPosition + ticks > LineAreaTop) and (VPosition + ticks <  (LineAreaTop + LineAreaSize)) then	 
+      if (VPosition + ticks > LineAreaTop) and (VPosition + ticks <  (LineAreaTop + LineAreaSize)) then
+	 
+	 local debug_pct = computePctFromCursor(VPosition)
+	 computeCursorFromPct(debug_pct)
+	 
 	 VPosition = VPosition + ticks	 
 	 newPosition(CursorLine,VPosition)
       end      
@@ -121,6 +117,7 @@ function ReadCenterChangeScreen(gc)
    end
    if retVal ~= nil then
       gfx.setColor(gfx.kColorBlack)
-   end   
+   end
+   
    return retVal
 end

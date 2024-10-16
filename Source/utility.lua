@@ -17,6 +17,10 @@
 
 ]]
 
+
+local MenuItems
+
+
 -- Write config data iff dirty
 function writeConfiguration(old,new)
    local dirtyFlag=false
