@@ -38,8 +38,6 @@ ImageDir="Resources/shapes/"
 
 MandalaGFX = {}
 
-
-
 local StateTable = {
    DrawingShapes="DrawingShapes",
    ReadingFrontMenu="ReadingFrontMenu",
@@ -156,7 +154,7 @@ function setupMandala()
    else
       GameConfigAtStart=table.deepcopy(GameConfig)
       FrontShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
-      RearShapeKey = FrontShapeKey
+      RearShapeKey = nil
       if GameConfig["rearshape"] ~= nil then
 	 RearShapeKey = SearchTableByPrompt(GameConfig["rearshape"],MandalaGFX)
       end      
@@ -198,7 +196,7 @@ setupMandala()
 function playdate.update()
    do      
       if debugPrinted > 60 then
-	 -- print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey)
+	 print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey)
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
