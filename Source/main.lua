@@ -163,7 +163,7 @@ function setupMandala()
       State = StateTable.DrawingShapes      
    end
    
-   SetupSystemMenu()
+   -- SetupSystemMenu()
       
    FrontShapeKey=SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
    
@@ -206,7 +206,7 @@ function playdate.update()
       
       
       if State == StateTable.DrawingShapes  then
-
+	 SetupSystemMenu()
 	 local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
 
 	 if crankTicks ~= 0 then
@@ -288,6 +288,7 @@ function playdate.update()
 	 end
       elseif State == StateTable.DrawingTopMenu then
 	 gfx.clear()
+	 RemoveSystemMenu()
 	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
 	 State=StateTable.ReadingTopMenu
       elseif State == StateTable.DrawingCenterChange then
