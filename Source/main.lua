@@ -31,6 +31,7 @@ import "makeGFXTable"
 import "editConfiguration"
 import "utility"
 import "changeMandalaCenter"
+import "changeCrankRate"
 
 gfx = playdate.graphics
 
@@ -39,15 +40,17 @@ ImageDir="Resources/shapes/"
 MandalaGFX = {}
 
 local StateTable = {
-   DrawingShapes="DrawingShapes",
-   ReadingFrontMenu="ReadingFrontMenu",
-   DrawingFrontMenu="DrawingFrontMenu",
-   ReadingTopMenu="ReadingTopMenu",
-   DrawingTopMenu="DrawingTopMenu",
-   DrawingRearMenu="DrawingRearMenu",
-   ReadingRearMenu="ReadingRearMenu",
-   DrawingCenterChange="DrawingCenterChange",
-   ReadingCenterChange="ReadingCenterChange"
+   DrawingShapes = "DrawingShapes",
+   ReadingFrontMenu = "ReadingFrontMenu",
+   DrawingFrontMenu = "DrawingFrontMenu",
+   ReadingTopMenu = "ReadingTopMenu",
+   DrawingTopMenu = "DrawingTopMenu",
+   DrawingRearMenu = "DrawingRearMenu",
+   ReadingRearMenu = "ReadingRearMenu",
+   DrawingCenterChange = "DrawingCenterChange",
+   ReadingCenterChange = "ReadingCenterChange",
+   DrawingCrankRate = "DrawingCrankRate",
+   ReadingCrankRate = "ReadingCrankRate"
 }
 
 local State =  StateTable.DrawingShapes
@@ -75,6 +78,7 @@ local TopMenuTable={
    {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
    {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu},
    {prompt="Change Center",nextState=StateTable.DrawingCenterChange}
+   {prompt="Change Crank Rate",nextState=DrawingCrankRate}
 }
 
 local GameConfig = {}
@@ -149,7 +153,6 @@ function setupMandala()
       GameConfig["crankticks"]=180
       GameConfig["imageflip"]=gfx.kImageUnflipped
       writeConfiguration(GameConfigAtStart,GameConfig)
-      playdate.datastore.write(GameConfig)
       State = StateTable.DrawingTopMenu
    else
       GameConfigAtStart=table.deepcopy(GameConfig)
@@ -305,7 +308,19 @@ function playdate.update()
 	    State = StateTable.DrawingShapes
 	    SetupSystemMenu()
 	 end
-	 
+      elseif State == StateTable.DrawingCrankRate then
+	 DrawCrankRateScreen(GameConfig)
+	 State = StateTable.ReadingCrankRate
+      elseif State == StateTable.ReadingCrankRate then
+	 local CrankRate = HandleCrankRateScreen()
+	 if CrankRate ~= nil then
+	    if CrankRate == playdate.kButtonB then
+	       State = StateTable.DrawingTopMenu
+	    end
+	 else
+	    GameConfig["crankticks"] = crankRate
+	    writeConfiguration(GameConfigAtStart,GameConfig)
+	    State = StateTable.DrawingShapes
       end      
    end   
 end
