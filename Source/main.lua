@@ -27,7 +27,6 @@ import "CoreLibs/ui"
 -- for printTable()
 import "CoreLibs/object"
 
-import "state"
 import "makeGFXTable"
 import "editConfiguration"
 import "utility"
