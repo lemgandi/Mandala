@@ -37,6 +37,8 @@ gfx = playdate.graphics
 
 ImageDir="Resources/shapes/"
 
+_G.allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
+
 MandalaGFX = {}
 
 local StateTable = {
@@ -77,8 +79,8 @@ local RearShapeKey=nil
 local TopMenuTable={
    {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
    {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu},
-   {prompt="Change Center",nextState=StateTable.DrawingCenterChange}
-   {prompt="Change Crank Rate",nextState=DrawingCrankRate}
+   {prompt="Change Center",nextState=StateTable.DrawingCenterChange},
+   {prompt="Change Crank Rate",nextState=StateTable.DrawingCrankRate}
 }
 
 local GameConfig = {}
@@ -141,8 +143,7 @@ function setupMandala()
    --   testGFXTable()
    -- testSearchTableByPrompt()
    
-   local allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
-   gfx.setFont(allFont)
+   gfx.setFont(_G.allFont)
 
    GameConfig = playdate.datastore.read()
       
@@ -197,9 +198,8 @@ setupMandala()
 
 -- Loop until force stop
 function playdate.update()
-   do      
       if debugPrinted > 60 then
-	 print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey)
+	 print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey,"crankticks:",GameConfig["crankticks"])
 	 debugPrinted=0
       else
 	 debugPrinted = debugPrinted+1
@@ -312,15 +312,12 @@ function playdate.update()
 	 DrawCrankRateScreen(GameConfig)
 	 State = StateTable.ReadingCrankRate
       elseif State == StateTable.ReadingCrankRate then
-	 local CrankRate = HandleCrankRateScreen()
-	 if CrankRate ~= nil then
-	    if CrankRate == playdate.kButtonB then
-	       State = StateTable.DrawingTopMenu
-	    end
-	 else
+	 local crankRate = HandleCrankRateScreen(GameConfig)
+	 if crankRate ~= nil then
+	    print("crankRate:",crankRate)
 	    GameConfig["crankticks"] = crankRate
 	    writeConfiguration(GameConfigAtStart,GameConfig)
-	    State = StateTable.DrawingShapes
+	    State = StateTable.DrawingShapes	    
+	 end
       end      
-   end   
 end
