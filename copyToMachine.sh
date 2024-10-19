@@ -5,7 +5,8 @@
 
 DESTDIR=/media/devel/PLAYDATE/Games/User
 status=TRUE
-GAMEZIP=${HOME}/Playdate_src/Mandala/Mandala.zip
+GAMESRCDIR=${HOME}/Playdate_src/Mandala
+GAMEZIP=${GAMESRCDIR}/Mandala.zip
 GAME=${DESTDIR}/Mandala.pdx
 
 if [ ! -d ${GAME} ]
@@ -17,8 +18,10 @@ fi
 if [ ${status:-NOTHING} = TRUE ]
 then
     rm -rf ${GAME}
+    pushd ${GAMESRCDIR}
     cd ${DESTDIR}
     unzip ${GAMEZIP}
+    popd
 fi
 
     

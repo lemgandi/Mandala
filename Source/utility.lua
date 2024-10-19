@@ -57,7 +57,9 @@ end
 
 -- Find a table entry by its prompt from menu
 function SearchTableByPrompt(p,t)
+   
    local retVal = nil
+   
    for kk,vv in pairs(t) do
       if vv.prompt == p then
 	 retVal = kk
@@ -72,6 +74,10 @@ end
 function DrawBanner(banner,bannerBottom,leftJ)
    
    local currentColor=gfx.getColor()
+   
+   if bannerBottom == nil then
+      bannerBottom = _G.allFont:getHeight()
+   end
    
    gfx.setColor(gfx.kColorBlack)
    gfx.fillRect(0,0,400,bannerBottom)

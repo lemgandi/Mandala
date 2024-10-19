@@ -25,7 +25,6 @@ gfx = playdate.graphics
 geom = playdate.geometry
 
 local CrankBarLeft = 20
-local CrankBarRight = 380
 local CrankBarVPos = 100
 local CrankBarHeight = 30
 
@@ -39,7 +38,7 @@ local NewCrankRate = 0
 
 function drawCurrentStep(step)
    
-   local theText=string.format("Current Step: %d",step)   
+   local theText=string.format("Current Step (U/D): %d",step)   
    local clearing_rect = geom.rect.new(CrankBarLeft,CrankBarVPos+CrankBarHeight+40,380,_G.allFont:getHeight())   
    local oldColor = gfx.getColor()
    
@@ -52,15 +51,17 @@ end
 
 -- Draw crankbar background screen
 function drawCrankBackground()
-   local lessStr="Less"
-   local moreStr="More"
+   local lessStr="Slower (L)"
+   local moreStr="Faster (R)"
 
    local moreMargin = _G.allFont:getTextWidth(moreStr)+2
    
-   gfx.drawLine(CrankBarLeft,32,CrankBarLeft,CrankBarVPos+CrankBarHeight+10)
-   gfx.drawLine(CrankBarRight,32,CrankBarRight,CrankBarVPos+CrankBarHeight+10)
+   gfx.drawLine(CrankBarLeft,32,CrankBarLeft,CrankBarVPos)
+   gfx.drawLine((CrankMax-7),32,(CrankMax-7),CrankBarVPos)
+   
    gfx.drawText(lessStr,CrankBarLeft,CrankBarVPos+CrankBarHeight+15)
-   gfx.drawText("More",CrankBarRight - moreMargin,CrankBarVPos+CrankBarHeight+15)
+   gfx.drawText(moreStr,CrankMax - moreMargin,CrankBarVPos+CrankBarHeight+15)
+   
 end
 
 function drawCrankBar(len)
@@ -68,7 +69,7 @@ function drawCrankBar(len)
    local oldColor=gfx.getColor()
    
    gfx.setColor(gfx.kColorWhite)
-   gfx.fillRect((CrankBarLeft+1),CrankBarVPos,(CrankBarRight-1),CrankBarHeight)
+   gfx.fillRect(CrankBarLeft,CrankBarVPos,CrankMax,CrankBarHeight)
    gfx.setColor(oldColor)
    gfx.fillRect(CrankBarLeft,CrankBarVPos,len,CrankBarHeight)
    
@@ -77,9 +78,10 @@ end
 -- Draw the screen to input ticks
 function DrawCrankRateScreen(gc)
    gfx.clear()
-   DrawBanner("Change Crank Rate",32,30)
+   DrawBanner("Change Crank Rate",nil,30)
    drawCrankBackground()
-   drawCrankBar(gc.crankticks)
+   NewCrankRate = gc.crankticks
+   drawCrankBar(NewCrankRate)
    drawCurrentStep(StepTable[CurrentStep])
 end
 

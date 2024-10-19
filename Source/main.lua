@@ -79,7 +79,7 @@ local RearShapeKey=nil
 local TopMenuTable={
    {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
    {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu},
-   {prompt="Change Center",nextState=StateTable.DrawingCenterChange},
+   {prompt="Change Rotation Center",nextState=StateTable.DrawingCenterChange},
    {prompt="Change Crank Rate",nextState=StateTable.DrawingCrankRate}
 }
 
@@ -99,7 +99,9 @@ end
 
 -- Remove nil choice from rear shape menu
 function RemoveNilChoice(shapemenu,nilprompt)
+   
    local nilChoice = SearchTableByPrompt(nilprompt,shapemenu)
+   
    if nilChoice ~= nil then
       shapemenu[nilChoice]=nil
    end   
@@ -119,7 +121,7 @@ function RestoreOldConfiguration()
       GameConfig = table.deepcopy(oldTable)
       FrontShapeKey = SearchTableByPrompt(GameConfig["frontshape"],MandalaGFX)
       if GameConfig["rearshape"] ~= nil then
-	 RearShapeKey = SearchTablebyPrompt(GameConfig["rearshape"],MandalaGFX)
+	 RearShapeKey = SearchTableByPrompt(GameConfig["rearshape"],MandalaGFX)
       else
 	 RearShapeKey = nil
       end

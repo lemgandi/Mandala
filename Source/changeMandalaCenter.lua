@@ -33,16 +33,21 @@ local VPosition=Center
 
 function SetupCenterChangeScreen(currentOffset)
    local limitRect = geom.rect.new(0,LineAreaTop,400,LineAreaSize)
-   local banner="Up/Down to Change"
+   local banner="Change Rotation Center"
+   local legendHeight=_G.allFont:getHeight()
    
-   DrawBanner(banner,32,30)
+   DrawBanner(banner,nil,0)
+
    CursorLine=geom.lineSegment.new(0,VPosition,400,VPosition)
+
    
    gfx.setColor(gfx.kColorBlack)
    gfx.fillRect(limitRect)
    gfx.setColor(gfx.kColorWhite)
    gfx.drawLine(CursorLine)
-   
+   gfx.drawText("Up/Down Change, B Reset",0,(LineAreaTop + LineAreaSize + legendHeight))
+   gfx.drawText("R/L Recenter, A Set",0,(LineAreaSize+LineAreaTop+(2*legendHeight)) )
+      
 end
 
 -- Redraw cursor at new position
