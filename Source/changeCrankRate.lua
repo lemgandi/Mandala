@@ -99,7 +99,8 @@ function HandleCrankRateScreen(gc)
 	 NewCrankRate = NewCrankRate + StepTable[CurrentStep]
 	 drawCrankBar(NewCrankRate)
       end
-      print("NewCrankRate:",NewCrankRate,"CrankMax:",CrankMax,"StepTable[CurrentStep]:",StepTable[CurrentStep])
+      Debug_print(
+	 "NewCrankRate:",NewCrankRate,"CrankMax:",CrankMax,"StepTable[CurrentStep]:",StepTable[CurrentStep])
    elseif playdate.buttonJustPressed(playdate.kButtonLeft) then
       if (NewCrankRate - StepTable[CurrentStep] ) > 1 then
 	 NewCrankRate = NewCrankRate - StepTable[CurrentStep]
@@ -120,7 +121,7 @@ function HandleCrankRateScreen(gc)
    end
    
    if retVal ~= nil then
-      print("retVal:",retVal)
+      Debug_print("retVal:",retVal)
    end
    
    return retVal

@@ -38,7 +38,7 @@ gfx = playdate.graphics
 ImageDir="Resources/shapes/"
 
 _G.allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
-
+_G.debug = true
 MandalaGFX = {}
 
 local StateTable = {
@@ -200,126 +200,128 @@ setupMandala()
 
 -- Loop until force stop
 function playdate.update()
-      if debugPrinted > 60 then
-	 print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey,"crankticks:",GameConfig["crankticks"])
-	 debugPrinted=0
-      else
-	 debugPrinted = debugPrinted+1
-      end
+   
+   if (debugPrinted > 60) then
+      Debug_print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey,"crankticks:",GameConfig["crankticks"])
+      debugPrinted=0
+   else
+      debugPrinted = debugPrinted+1
+   end
       
       
-      if State == StateTable.DrawingShapes  then
-	 SetupSystemMenu()
-	 local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
-
-	 if crankTicks ~= 0 then
-	    CurrentRotation = CurrentRotation + crankTicks	 
-	    MandalaGFX[FrontShapeKey][2]:setRotation(CurrentRotation)
-	 end      
-	 gfx.sprite.update()
-	 
-	 if RearShapeKey ~= nil then
-	    MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
-	 else	    
-	    MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
-	 end	 
-      elseif State == StateTable.ReadingFrontMenu then
-	 local currentChoice
-	 currentChoice = editConfiguration()
-	 if (currentChoice ~= nil) then
-	    if currentChoice == playdate.kButtonB then
-	       State = StateTable.DrawingTopMenu
-	    else	       
-	       deleteOldMandala(FrontShapeKey)
-	       if currentChoice ~= MandalaGFX[FrontShapeKey].prompt then
-		  FrontShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
-		  GameConfig["frontshape"] = currentChoice
-		  writeConfiguration(GameConfigAtStart,GameConfig)	    
-	       end
-	       drawNewMandala(FrontShapeKey)
-	       State = StateTable.DrawingShapes
-	    end	    
-	 end
-      elseif State == StateTable.ReadingTopMenu then
-	 local chosenPrompt	 
-	 chosenPrompt = editConfiguration()
-	 if (chosenPrompt ~= nil) then
-	    if chosenPrompt == playdate.kButtonB then
-	       State=StateTable.DrawingShapes
-	    else	       
-	       local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
-	       State=TopMenuTable[menuChoice].nextState
+   if State == StateTable.DrawingShapes  then
+      SetupSystemMenu()
+      local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
+      
+      if crankTicks ~= 0 then
+	 CurrentRotation = CurrentRotation + crankTicks	 
+	 MandalaGFX[FrontShapeKey][2]:setRotation(CurrentRotation)
+      end      
+      gfx.sprite.update()
+      
+      if RearShapeKey ~= nil then
+	 MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+      else	    
+	 MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+      end	 
+   elseif State == StateTable.ReadingFrontMenu then
+      local currentChoice
+      currentChoice = editConfiguration()
+      if (currentChoice ~= nil) then
+	 if currentChoice == playdate.kButtonB then
+	    State = StateTable.DrawingTopMenu
+	 else	       
+	    deleteOldMandala(FrontShapeKey)
+	    if currentChoice ~= MandalaGFX[FrontShapeKey].prompt then
+	       FrontShapeKey = SearchTableByPrompt(currentChoice,MandalaGFX)	    
+	       GameConfig["frontshape"] = currentChoice
+	       writeConfiguration(GameConfigAtStart,GameConfig)	    
 	    end
-	 end	 
-      elseif State == StateTable.DrawingFrontMenu then
-	 gfx.clear()   
-	 editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["frontshape"])
-	 State=StateTable.ReadingFrontMenu
-      elseif State == StateTable.DrawingRearMenu then
-	 gfx.clear()
-	 InsertNilChoice(MandalaGFX,NilRearPrompt)
-	 local topChoice=NilRearPrompt
-	 if GameConfig["rearshape"] ~= nil then
-	    topChoice=GameConfig["rearshape"]
-	 end	 
-	 editConfigurationSetup(MandalaGFX,"Rear Shape",topChoice)
-	 State = StateTable.ReadingRearMenu
-	 
-      elseif State == StateTable.ReadingRearMenu then
-	 local currentRearChoice
-
-	 currentRearChoice=editConfiguration()
-
-	 if currentRearChoice ~= nil then
-	    if currentRearChoice == playdate.kButtonB then
-	       RemoveNilChoice(MandalaGFX,NilRearPrompt)
-	       State=StateTable.DrawingTopMenu
-	    else
-	       RemoveNilChoice(MandalaGFX,NilRearPrompt)	    
-	       deleteOldMandala(FrontShapeKey)
-	       RearShapeKey = SearchTableByPrompt(currentRearChoice,MandalaGFX)
-	       if currentRearChoice == NilRearPrompt then
-		  RearShapeKey = nil
-		  GameConfig["rearshape"] = nil
-	       else	       
-		  GameConfig["rearshape"]=currentRearChoice
-	       end	    
-	       writeConfiguration(GameConfigAtStart,GameConfig)
-	       drawNewMandala(FrontShapeKey)
-	       State=StateTable.DrawingShapes
-	    end
-	 end
-      elseif State == StateTable.DrawingTopMenu then
-	 gfx.clear()
-	 RemoveSystemMenu()
-	 editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
-	 State=StateTable.ReadingTopMenu
-      elseif State == StateTable.DrawingCenterChange then
-	 gfx.clear()
-	 RemoveSystemMenu()
-	 SetupCenterChangeScreen(GameConfig["offset"])
-	 State = StateTable.ReadingCenterChange
-      elseif State == StateTable.ReadingCenterChange then
-	 local centerPct
-	 centerPct = ReadCenterChangeScreen(GameConfig)
-	 if centerPct ~= nil then
-	    centerPct = math.floor((centerPct*100) + 0.5) / 100
-	    GameConfig["offset"] = centerPct
-	    writeConfiguration(GameConfigAtStart,GameConfig)
 	    drawNewMandala(FrontShapeKey)
 	    State = StateTable.DrawingShapes
-	    SetupSystemMenu()
+	 end	    
+      end
+   elseif State == StateTable.ReadingTopMenu then
+      local chosenPrompt	 
+      chosenPrompt = editConfiguration()
+      if (chosenPrompt ~= nil) then
+	 if chosenPrompt == playdate.kButtonB then
+	    State=StateTable.DrawingShapes
+	 else	       
+	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
+	    State=TopMenuTable[menuChoice].nextState
 	 end
-      elseif State == StateTable.DrawingCrankRate then
-	 DrawCrankRateScreen(GameConfig)
-	 State = StateTable.ReadingCrankRate
-      elseif State == StateTable.ReadingCrankRate then
-	 local crankRate = HandleCrankRateScreen(GameConfig)
-	 if crankRate ~= nil then
-	    print("crankRate:",crankRate)
-	    GameConfig["crankticks"] = crankRate
+      end	 
+   elseif State == StateTable.DrawingFrontMenu then
+      gfx.clear()   
+      editConfigurationSetup(MandalaGFX,"Front Shape",GameConfig["frontshape"])
+      State=StateTable.ReadingFrontMenu
+   elseif State == StateTable.DrawingRearMenu then
+      gfx.clear()
+      InsertNilChoice(MandalaGFX,NilRearPrompt)
+      local topChoice=NilRearPrompt
+      if GameConfig["rearshape"] ~= nil then
+	 topChoice=GameConfig["rearshape"]
+      end	 
+      editConfigurationSetup(MandalaGFX,"Rear Shape",topChoice)
+      State = StateTable.ReadingRearMenu
+      
+   elseif State == StateTable.ReadingRearMenu then
+      local currentRearChoice
+      
+      currentRearChoice=editConfiguration()
+      
+      if currentRearChoice ~= nil then
+	 if currentRearChoice == playdate.kButtonB then
+	    RemoveNilChoice(MandalaGFX,NilRearPrompt)
+	    State=StateTable.DrawingTopMenu
+	 else
+	    RemoveNilChoice(MandalaGFX,NilRearPrompt)	    
+	    deleteOldMandala(FrontShapeKey)
+	    RearShapeKey = SearchTableByPrompt(currentRearChoice,MandalaGFX)
+	    if currentRearChoice == NilRearPrompt then
+	       RearShapeKey = nil
+	       GameConfig["rearshape"] = nil
+	    else	       
+	       GameConfig["rearshape"]=currentRearChoice
+	    end	    
 	    writeConfiguration(GameConfigAtStart,GameConfig)
-	    State = StateTable.DrawingShapes	    
+	    drawNewMandala(FrontShapeKey)
+	    State=StateTable.DrawingShapes
 	 end
-      end      
+      end
+   elseif State == StateTable.DrawingTopMenu then
+      gfx.clear()
+      RemoveSystemMenu()
+      editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
+      State=StateTable.ReadingTopMenu
+   elseif State == StateTable.DrawingCenterChange then
+      gfx.clear()
+      RemoveSystemMenu()
+      SetupCenterChangeScreen(GameConfig["offset"])
+      State = StateTable.ReadingCenterChange
+   elseif State == StateTable.ReadingCenterChange then
+      local centerPct
+      centerPct = ReadCenterChangeScreen(GameConfig)
+      if centerPct ~= nil then
+	 centerPct = math.floor((centerPct*100) + 0.5) / 100
+	 GameConfig["offset"] = centerPct
+	 writeConfiguration(GameConfigAtStart,GameConfig)
+	 drawNewMandala(FrontShapeKey)
+	 State = StateTable.DrawingShapes
+	 SetupSystemMenu()
+      end
+   elseif State == StateTable.DrawingCrankRate then
+      DrawCrankRateScreen(GameConfig)
+      State = StateTable.ReadingCrankRate
+   elseif State == StateTable.ReadingCrankRate then
+      local crankRate = HandleCrankRateScreen(GameConfig)
+      if crankRate ~= nil then
+
+	 Debug_print("crankRate:",crankRate)
+	 GameConfig["crankticks"] = crankRate
+	 writeConfiguration(GameConfigAtStart,GameConfig)
+	 State = StateTable.DrawingShapes	    
+      end
+   end      
 end
