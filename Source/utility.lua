@@ -19,7 +19,7 @@
 
 
 local MenuItems
-
+local Debug_timescalled=0
 
 -- Write config data iff dirty
 function writeConfiguration(old,new)
@@ -87,6 +87,16 @@ function DrawBanner(banner,bannerBottom,leftJ)
 
 end
 
+function Update_debug_print(...)
+   if _G.debug then
+      Debug_timescalled = Debug_timescalled + 1
+      if Debug_timescalled > 60 then
+	 Debug_print(...)
+	 Debug_timescalled = 1
+      end
+   end   
+end
+
 -- Print iff _G.debug is true.
 function Debug_print(...)
 
@@ -96,7 +106,7 @@ function Debug_print(...)
       for kk,vv in ipairs({...}) do
 	 fmtstr="%s "
 	 if type(vv) == 'number' then 
-	    fmtstr="%d "
+	    fmtstr="%f "
 	 elseif type(vv) ~= 'string' and type(vv) ~= 'boolean' then
 	    fmtstr="%p "
 	 end

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="400"
+   height="240"
+   viewBox="0 0 105.83333 63.5"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="spiralthick2.svg"
+   inkscape:export-filename="../Source/Resources/shapes/spiralthick2.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="2.7812867"
+     inkscape:cx="191.99747"
+     inkscape:cy="120.0883"
+     inkscape:window-width="1860"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="0,63.499999"
+       orientation="120,0"
+       id="guide236"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="0,31.749999"
+       orientation="0,199.99999"
+       id="guide238"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="52.916664,31.749999"
+       orientation="-120,0"
+       id="guide240"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="52.916664,63.499999"
+       orientation="0,-199.99999"
+       id="guide242"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       sodipodi:type="spiral"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.79374999;stroke-dasharray:none"
+       id="path2970"
+       sodipodi:cx="52.916664"
+       sodipodi:cy="31.75"
+       sodipodi:expansion="1.03"
+       sodipodi:revolution="2.9000001"
+       sodipodi:radius="18.93919"
+       sodipodi:argument="-17.933456"
+       sodipodi:t0="0"
+       d="m 52.916664,31.75 c 0.549686,0.716071 -0.712824,1.094831 -1.20329,0.923696 -1.391679,-0.485589 -1.388658,-2.347681 -0.682919,-3.380843 1.28287,-1.878051 4.006194,-1.766097 5.617036,-0.406793 2.390482,2.0172 2.157922,5.710645 0.120859,7.881493 -2.738173,2.918004 -7.439447,2.557346 -10.165755,-0.170607 -3.454246,-3.456332 -2.961552,-9.184575 0.465834,-12.465385 4.174756,-3.996217 10.941992,-3.369114 14.777613,0.763872 4.542337,4.894493 3.779221,12.709281 -1.064143,17.100532 -5.615904,5.091678 -14.484835,4.191371 -19.432748,-1.366254 -5.643642,-6.339088 -4.605225,-16.267511 1.669933,-21.773192 7.064032,-6.197822 18.056448,-5.020545 24.121021,1.974968 3.844356,4.434484 5.278705,10.596948 3.936892,16.293942" />
+  </g>
+</svg>

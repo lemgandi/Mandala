@@ -77,8 +77,8 @@ local FrontShapeKey=nil
 local RearShapeKey=nil
 
 local TopMenuTable={
-   {prompt='Choose Top Shape', nextState = StateTable.DrawingFrontMenu},
-   {prompt='Choose Bottom Shape',nextState = StateTable.DrawingRearMenu},
+   {prompt='Choose Moving Shape', nextState = StateTable.DrawingFrontMenu},
+   {prompt='Choose Still Shape',nextState = StateTable.DrawingRearMenu},
    {prompt="Change Rotation Center",nextState=StateTable.DrawingCenterChange},
    {prompt="Change Crank Rate",nextState=StateTable.DrawingCrankRate}
 }
@@ -112,6 +112,27 @@ function SaveOldConfiguration()
    playdate.datastore.write(GameConfig,OldFN,false)
 end
 
+-- Draw the background shape
+function drawRearShape(shape)
+   -- Oof. How to draw an image both scaled and flipped. Affine transform? TODO
+   
+   if GameConfig["rearscale"] ~= nil then
+      local xPlace,yPlace
+      if GameConfig.rearscale < 1 then
+	 xPlace = 200 * GameConfig.rearscale
+	 yPlace = 120 * GameConfig.rearscale
+      else
+	 xPlace = ((GameConfig.rearscale * 400) - 200) / GameConfig.rearscale
+	 yPlace = ((GameConfig.rearscale * 120) - 120) / GameConfig.rearscale
+      end
+      Update_debug_print("xPlace:",xPlace,"yPlace:",yPlace)
+      shape:drawScaled(xPlace,yPlace,GameConfig.rearscale)
+   else      
+      shape:draw(0,0,GameConfig.ImageFlip)
+   end
+   
+end
+
 -- Restore config file from reserve
 function RestoreOldConfiguration()
    
@@ -127,9 +148,9 @@ function RestoreOldConfiguration()
       end
       
       if RearShapeKey ~= nil then
-	 MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 drawRearShape(MandalaGFX[RearShapeKey][1])
       else	    
-	 MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 drawRearShape(MandalaGFX[FrontShapeKey][1])
       end	       
       drawNewMandala(FrontShapeKey)
    end
@@ -201,12 +222,9 @@ setupMandala()
 -- Loop until force stop
 function playdate.update()
    
-   if (debugPrinted > 60) then
-      Debug_print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"RearShapeKey:",RearShapeKey,"crankticks:",GameConfig["crankticks"])
-      debugPrinted=0
-   else
-      debugPrinted = debugPrinted+1
-   end
+
+--      Update_debug_print("State:",StateTable[State],"FrontShapeKey:",FrontShapeKey,"GameConfig.rearscale",GameConfig["rearscale"])
+
       
       
    if State == StateTable.DrawingShapes  then
@@ -220,9 +238,9 @@ function playdate.update()
       gfx.sprite.update()
       
       if RearShapeKey ~= nil then
-	 MandalaGFX[RearShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 drawRearShape(MandalaGFX[RearShapeKey][1])
       else	    
-	 MandalaGFX[FrontShapeKey][1]:draw(0,0,GameConfig.ImageFlip)
+	 drawRearShape(MandalaGFX[FrontShapeKey][1])
       end	 
    elseif State == StateTable.ReadingFrontMenu then
       local currentChoice
