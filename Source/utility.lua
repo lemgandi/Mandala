@@ -21,6 +21,8 @@
 local MenuItems
 local Debug_timescalled=0
 
+local debug=false
+
 -- Write config data iff dirty
 function writeConfiguration(old,new)
    local dirtyFlag=false
@@ -87,20 +89,24 @@ function DrawBanner(banner,bannerBottom,leftJ)
 
 end
 
-function Update_debug_print(...)
-   if _G.debug then
-      Debug_timescalled = Debug_timescalled + 1
-      if Debug_timescalled > 60 then
-	 Debug_print(...)
-	 Debug_timescalled = 1
-      end
+function playdate.keyPressed(k)
+   
+   if k == 't' then
+       debug = not debug
+   end
+   
+end
+
+function playdate.debugDraw()
+   if debug == true then
+      gfx.fillRect(150,90,150,90)
    end   
 end
 
--- Print iff _G.debug is true.
+-- Print iff debug is true.
 function Debug_print(...)
-
-   if _G.debug then
+   
+   if (debug == true) then
       local kk,vv,fmtstr,fs
       local prtstr=""
       for kk,vv in ipairs({...}) do

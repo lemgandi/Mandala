@@ -38,7 +38,7 @@ gfx = playdate.graphics
 ImageDir="Resources/shapes/"
 
 _G.allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
-_G.debug = true
+
 MandalaGFX = {}
 
 local StateTable = {
@@ -119,14 +119,18 @@ function drawRearShape(shape)
    if GameConfig["rearscale"] ~= nil then
       local xPlace,yPlace
       if GameConfig.rearscale < 1 then
-	 xPlace = 200 * GameConfig.rearscale
-	 yPlace = 120 * GameConfig.rearscale
+	 -- 100,60,200,120 = 0.5
+	 -- 50,30,300,150 = 0.75
+	 -- 45,20,320,192 = 0.8
+	 xPlace=100
+	 yPlace=60
       else
-	 xPlace = ((GameConfig.rearscale * 400) - 200) / GameConfig.rearscale
-	 yPlace = ((GameConfig.rearscale * 120) - 120) / GameConfig.rearscale
+	 xPlace = -300
+	 yPlace = -120
       end
-      Update_debug_print("xPlace:",xPlace,"yPlace:",yPlace)
-      shape:drawScaled(xPlace,yPlace,GameConfig.rearscale)
+      local xdimen,ydimen = shape:scaledImage(GameConfig.rearscale,GameConfig.rearscale):getSize()
+      Debug_print("xdimen:",xdimen,"ydimen:",ydimen,"xPlace:",xPlace,"yPlace:",yPlace)
+      shape:drawScaled(xPlace,yPlace,GameConfig.rearscale,GameConfig.rearscale)
    else      
       shape:draw(0,0,GameConfig.ImageFlip)
    end
