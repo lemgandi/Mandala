@@ -122,3 +122,15 @@ function Debug_print(...)
       print(prtstr)            
    end   
 end
+
+-- Compute upper left corner of scaled image to draw.  This is a function so we can call it from
+-- changeScale.
+function computeScaleXY(scale)
+   local xPlace
+   local yPlace
+
+   xPlace = (400 - (400 * scale)) / 2
+   yPlace = (240 - (240 * scale)) / 2
+   
+   return xPlace,yPlace
+end

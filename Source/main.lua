@@ -32,6 +32,7 @@ import "editConfiguration"
 import "utility"
 import "changeMandalaCenter"
 import "changeCrankRate"
+import "changeRearScale"
 
 gfx = playdate.graphics
 
@@ -52,7 +53,9 @@ local StateTable = {
    DrawingCenterChange = "DrawingCenterChange",
    ReadingCenterChange = "ReadingCenterChange",
    DrawingCrankRate = "DrawingCrankRate",
-   ReadingCrankRate = "ReadingCrankRate"
+   ReadingCrankRate = "ReadingCrankRate",
+   DrawingRearScale = "DrawingRearScale",
+   ReadingRearScale = "ReadingRearScale"   
 }
 
 local State =  StateTable.DrawingShapes
@@ -80,7 +83,8 @@ local TopMenuTable={
    {prompt='Choose Moving Shape', nextState = StateTable.DrawingFrontMenu},
    {prompt='Choose Still Shape',nextState = StateTable.DrawingRearMenu},
    {prompt="Change Rotation Center",nextState=StateTable.DrawingCenterChange},
-   {prompt="Change Crank Rate",nextState=StateTable.DrawingCrankRate}
+   {prompt="Change Crank Rate",nextState=StateTable.DrawingCrankRate},
+   {prompt="Change Still Shape Size",nextState=StateTable.DrawingRearScale}
 }
 
 local GameConfig = {}
@@ -117,12 +121,9 @@ function drawRearShape(shape)
    -- Oof. How to draw an image both scaled and flipped. Affine transform? TODO
    
    if GameConfig["rearscale"] ~= nil then
-      local xPlace,yPlace
-      xPlace = (400 - (400 * GameConfig.rearscale)) / 2
-      yPlace = (240 - (240 * GameConfig.rearscale)) / 2
-
+      local xPlace,yPlace = computeScaleXY(GameConfig.rearscale)      
       local xdimen,ydimen = shape:scaledImage(GameConfig.rearscale,GameConfig.rearscale):getSize()
-      Debug_print("xdimen:",xdimen,"ydimen:",ydimen,"xPlace:",xPlace,"yPlace:",yPlace)
+--      Debug_print("xdimen:",xdimen,"ydimen:",ydimen,"xPlace:",xPlace,"yPlace:",yPlace)
       shape:drawScaled(xPlace,yPlace,GameConfig.rearscale,GameConfig.rearscale)
    else      
       shape:draw(0,0,GameConfig.ImageFlip)
@@ -338,5 +339,25 @@ function playdate.update()
 	 writeConfiguration(GameConfigAtStart,GameConfig)
 	 State = StateTable.DrawingShapes	    
       end
-   end      
-end
+   elseif State == StateTable.DrawingRearScale then
+      local scaleShape = MandalaGFX[FrontShapeKey][1]
+      if RearShapeKey then
+	 scaleShape = MandalaGFX[RearShapeKey][1]
+      end      
+      drawScaleScreen(GameConfig,scaleShape)
+      State = StateTable.ReadingRearScale
+   elseif State == StateTable.ReadingRearScale then
+      local newScale
+      newScale = readScaleScreen(GameConfig)
+      if newScale ~= nil then
+	 if newScale == 'kButtonB' then   -- Do I want this??
+	    State = StateTable.DrawingTopMenu
+	 else	    
+	    GameConfig["rearscale"] = newScale
+	    writeConfiguration(GameConfigAtStart,GameConfig)
+	    State = StateTable.DrawingShapes
+	 end
+      end
+   end
+end   
+

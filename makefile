@@ -10,7 +10,8 @@ CONFIG=$(SDK)/Disk/Data/org.tomshiro.mandala
 SIM=PlaydateSimulator
 SRCDIR=Source
 GAMESRC=makefile $(SRCDIR)/main.lua $(SRCDIR)/editConfiguration.lua $(SRCDIR)/makeGFXTable.lua \
-$(SRCDIR)/utility.lua $(SRCDIR)/changeMandalaCenter.lua $(SRCDIR)/changeCrankRate.lua
+$(SRCDIR)/utility.lua $(SRCDIR)/changeMandalaCenter.lua $(SRCDIR)/changeCrankRate.lua \
+$(SRCDIR)/changeRearScale.lua
 
 GAMERESOURCES=$(SRCDIR)/Images/card.png $(SRCDIR)/pdxinfo
 build: compile run
