@@ -18,23 +18,32 @@
 
 --]]
 import "CoreLibs/strict"
+local myShape
+
+function drawShape(sh,sc)
+
+   local xPlace,yPlace = computeScaleXY(sc)
+   sh:drawScaled(xPlace,yPlace,sc,sc)
+   
+end
+
+function drawScaleScreenBackground()
+   DrawBanner("Change Still Shape Size",nil,0)
+end
 
 function drawScaleScreen(cf,sh)
    
    gfx.clear()
    
-   DrawBanner("Change Still Shape Size",nil,0)
-   
-   local xPlace = 0
-   local yPlace = 0
-   local scale = 1
-   
+   drawScaleScreenBackground()
+
+   myShape = sh
    if cf.rearscale then
-      scale = cf.rearscale
-      xPlace,yPlace = computeScaleXY(scale)
+      drawShape(myShape,cf.rearscale)
+   else
+      drawShape(myShape,1)
    end
-   sh:drawScaled(xPlace,yPlace,scale)
-					   
+   
 end
 
 function readScaleScreen(cf)
@@ -45,8 +54,26 @@ function readScaleScreen(cf)
    
    if playdate.buttonJustPressed(playdate.kButtonB) then
       retVal = "kButtonB"
+   elseif playdate.buttonJustPressed(playdate.kButtonUp) then
+      newScale = newScale + 0.1
+      gfx.clear()
+      drawScaleScreenBackground()
+      drawShape(myShape,newScale)
+   elseif playdate.buttonJustPressed(playdate.kButtonDown) then
+      newScale = newScale - 0.1
+      if newScale < 0.5 then
+	 newScale = 1
+      end
+      gfx.clear()
+      drawScaleScreenBackground()
+      drawShape(myShape,newScale)
+   elseif playdate.buttonJustPressed(playdate.kButtonLeft) then
+      newScale = 1
+      gfx.clear()
+      drawScaleScreenBackground()
+      drawShape(myShape,newScale)
    elseif playdate.buttonJustPressed(playdate.kButtonA) then
-      retVal = 0.5
+      retVal = newScale
    end
    
    return retVal
