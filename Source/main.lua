@@ -118,16 +118,9 @@ function drawRearShape(shape)
    
    if GameConfig["rearscale"] ~= nil then
       local xPlace,yPlace
-      if GameConfig.rearscale < 1 then
-	 -- 100,60,200,120 = 0.5
-	 -- 50,30,300,150 = 0.75
-	 -- 45,20,320,192 = 0.8
-	 xPlace=100
-	 yPlace=60
-      else
-	 xPlace = -300
-	 yPlace = -120
-      end
+      xPlace = (400 - (400 * GameConfig.rearscale)) / 2
+      yPlace = (240 - (240 * GameConfig.rearscale)) / 2
+
       local xdimen,ydimen = shape:scaledImage(GameConfig.rearscale,GameConfig.rearscale):getSize()
       Debug_print("xdimen:",xdimen,"ydimen:",ydimen,"xPlace:",xPlace,"yPlace:",yPlace)
       shape:drawScaled(xPlace,yPlace,GameConfig.rearscale,GameConfig.rearscale)
