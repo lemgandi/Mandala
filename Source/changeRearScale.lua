@@ -18,7 +18,11 @@
 
 --]]
 import "CoreLibs/strict"
+
+local gfx = playdate.graphics
+
 local myShape
+local NewScale=0.5
 
 function drawShape(sh,sc)
 
@@ -28,7 +32,11 @@ function drawShape(sh,sc)
 end
 
 function drawScaleScreenBackground()
+   local textHeight = _G.allFont:getHeight()
+   
    DrawBanner("Change Still Shape Size",nil,0)
+   gfx.drawText("U/D change size,",0,textHeight)
+   gfx.drawText("L scale=1,R scale=start",0,(textHeight * 2))
 end
 
 function drawScaleScreen(cf,sh)
@@ -46,34 +54,47 @@ function drawScaleScreen(cf,sh)
    
 end
 
-function readScaleScreen(cf)
+function redrawShape(shape,scale)
+   gfx.clear()
+   drawScaleScreenBackground()
+   drawShape(shape,scale)
+end
 
-   local oldScale=cf.scale
-   local newScale=0.5
+function readScaleScreen(cf)
+   
    local retVal = nil
    
    if playdate.buttonJustPressed(playdate.kButtonB) then
       retVal = "kButtonB"
    elseif playdate.buttonJustPressed(playdate.kButtonUp) then
-      newScale = newScale + 0.1
-      gfx.clear()
-      drawScaleScreenBackground()
-      drawShape(myShape,newScale)
+      NewScale = NewScale + 0.01
+      redrawShape(myShape,NewScale)
+      Debug_print("kButtonUp NewScale:",NewScale)
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
-      newScale = newScale - 0.1
-      if newScale < 0.5 then
-	 newScale = 1
+      NewScale = NewScale - 0.01
+      if NewScale < 0.5 then
+	 NewScale = 1
       end
-      gfx.clear()
-      drawScaleScreenBackground()
-      drawShape(myShape,newScale)
+      redrawShape(myShape,NewScale)
+      Debug_print("kButtonDown NewScale:",NewScale)
    elseif playdate.buttonJustPressed(playdate.kButtonLeft) then
-      newScale = 1
-      gfx.clear()
-      drawScaleScreenBackground()
-      drawShape(myShape,newScale)
+      NewScale = 1
+      Debug_print("kButtonLeft NewScale:",NewScale)
+      redrawShape(myShape,NewScale)
+   elseif playdate.buttonJustPressed(playdate.kButtonRight) then
+      if cf["rearscale"] then	 
+	 NewScale = cf["rearscale"]
+      else
+	 NewScale = 1
+      end      
+      redrawShape(myShape,NewScale)
+      Debug_print("kButtonRight NewScale:",NewScale)
    elseif playdate.buttonJustPressed(playdate.kButtonA) then
-      retVal = newScale
+      retVal = NewScale
+   end
+   
+   if retVal ~= nil then
+      Debug_print("RetVal:", retVal)
    end
    
    return retVal
