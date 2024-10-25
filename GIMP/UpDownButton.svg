@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="400"
+   height="240"
+   viewBox="0 0 105.83333 63.5"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="UpDownButton.svg"
+   inkscape:export-filename="UpDownButton.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="2.7812867"
+     inkscape:cx="192.89633"
+     inkscape:cy="120.0883"
+     inkscape:window-width="1860"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="0,63.499999"
+       orientation="120,0"
+       id="guide236"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="0,31.749999"
+       orientation="0,199.99999"
+       id="guide238"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="52.96236,31.749999"
+       orientation="-120,0"
+       id="guide240"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="52.916664,63.499999"
+       orientation="0,-199.99999"
+       id="guide242"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#f2f2f2;stroke:#000000;stroke-width:0.899583"
+       id="rect718"
+       width="5.9762192"
+       height="20.888474"
+       x="50.121536"
+       y="22.364462" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.642531;stroke-opacity:1"
+       id="rect2965-7"
+       width="6.2332721"
+       height="3.6621144"
+       x="49.993011"
+       y="39.468708" />
+    <rect
+       style="fill:#f2f2f2;stroke:#000000;stroke-width:0.899583"
+       id="rect718-6"
+       width="5.9762192"
+       height="20.888474"
+       x="28.76189"
+       y="-63.360901"
+       transform="rotate(90)" />
+    <rect
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.899583;fill-opacity:1;stroke-opacity:1"
+       id="rect860"
+       width="4.2765107"
+       height="7.1593552"
+       x="50.778412"
+       y="27.600647" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.642531;stroke-opacity:1"
+       id="rect2965"
+       width="6.2332721"
+       height="3.6621144"
+       x="49.993008"
+       y="22.235935" />
+  </g>
+</svg>

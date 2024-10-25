@@ -36,7 +36,8 @@ import "changeRearScale"
 
 gfx = playdate.graphics
 
-ImageDir="Resources/shapes/"
+ImageDir = "Resources/shapes/"
+MenuImageDir = "Resources/MenuImages"
 
 _G.allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
 
@@ -94,6 +95,8 @@ local OldFN = "old_data"
 local debugPrinted=0
 
 local NilRearPrompt="Same as Front"
+
+local MenuImages={}
 
 -- Add nil choice to rear shape menu
 function InsertNilChoice(shapemenu,nilprompt)
@@ -160,10 +163,10 @@ end
    
 function setupMandala()
 
-   MandalaGFX=makeGFXTable(ImageDir)
+   MandalaGFX = makeGFXTable(ImageDir)
    --   testGFXTable()
    -- testSearchTableByPrompt()
-   
+   MenuImages = makeMenuImages(MenuImageDir)
    gfx.setFont(_G.allFont)
 
    GameConfig = playdate.datastore.read()
@@ -307,6 +310,7 @@ function playdate.update()
 	 end
       end
    elseif State == StateTable.DrawingTopMenu then
+      playdate.setMenuImage(MenuImages.TopMenuImage)
       gfx.clear()
       RemoveSystemMenu()
       editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)

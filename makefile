@@ -13,7 +13,8 @@ GAMESRC=makefile $(SRCDIR)/main.lua $(SRCDIR)/editConfiguration.lua $(SRCDIR)/ma
 $(SRCDIR)/utility.lua $(SRCDIR)/changeMandalaCenter.lua $(SRCDIR)/changeCrankRate.lua \
 $(SRCDIR)/changeRearScale.lua
 
-GAMERESOURCES=$(SRCDIR)/Images/card.png $(SRCDIR)/pdxinfo
+GAMERESOURCES=$(SRCDIR)/Images/card.png $(SRCDIR)/pdxinfo $(SRCDIR)/Resources/shapes/* $(SRCDIR)/Resources/MenuImages/*
+
 build: compile run
 
 run: open

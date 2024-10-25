@@ -27,8 +27,8 @@ import "utility"
 function makeGFXTable(tableDir)
    local fileList=playdate.file.listFiles(tableDir)
    local retVal = {}
+   local searchExtension = "%.pdi$"   
    local gfxEntry={}
-   local searchExtension = "%.pdi$"
    local prompt
    
 --[[
@@ -55,6 +55,25 @@ function makeGFXTable(tableDir)
    
    return retVal
 end
+
+function makeMenuImages(imageDir)
+   local fileList=playdate.file.listFiles(imageDir)
+   local searchExtension = "%.pdi$"
+   local retVal = {}
+   local kk,vv
+   
+   for kk,vv in pairs(fileList) do
+      if nil ~= string.find(vv,searchExtension) then
+	 local key=string.gsub(vv,searchExtension,"")
+	 local theImage=gfx.image.new(imageDir .. vv)
+	 retVal[key] = theImage
+      end
+   end
+   
+   printTable(retVal)
+   
+end
+
 --[[
 -- Is GFX table valid?
 function testGFXTable()
