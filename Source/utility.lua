@@ -134,3 +134,16 @@ function computeScaleXY(scale)
    
    return xPlace,yPlace
 end
+
+function FindFilesByWildcard(dir,wc)
+   local retVal = {}
+
+   retVal=playdate.file.listFiles(dir)
+   
+   for kk,vv in pairs(retVal) do
+      if nil == string.find(vv,wc) then
+	 retVal[kk] = nil
+      end      
+   end
+   return retVal
+end

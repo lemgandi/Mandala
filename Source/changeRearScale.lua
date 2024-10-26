@@ -73,7 +73,7 @@ function readScaleScreen(cf)
    elseif playdate.buttonJustPressed(playdate.kButtonDown) then
       NewScale = NewScale - 0.01
       if NewScale < 0.5 then
-	 NewScale = 1
+	 NewScale = 0.5
       end
       redrawShape(myShape,NewScale)
       Debug_print("kButtonDown NewScale:",NewScale)

@@ -25,29 +25,32 @@ import "utility"
 
 -- Make global graphics table from pictures in tableDir
 function makeGFXTable(tableDir)
-   local fileList=playdate.file.listFiles(tableDir)
+   local fileList
    local retVal = {}
-   local searchExtension = "%.pdi$"   
    local gfxEntry={}
    local prompt
-   
+   local searchExtension="%.pdi$"
 --[[
    GFX table. Each entry contains:
    * Prompt (filename of png)
    * Image from png
    * Sprite from image of png
 ]]
+   if nil == string.find(tableDir,"%/$") then
+      tableDir = string.format("%s/",tableDir)
+   end
    
+   fileList = FindFilesByWildcard(tableDir,searchExtension)
    for kk,vv in pairs(fileList) do
-      if nil ~= string.find(vv,searchExtension) then
-	 prompt = string.gsub(vv,searchExtension,"")
-	 local theSprite=gfx.sprite.new()
-	 gfxEntry = {gfx.image.new(tableDir .. vv)}      
-	 theSprite:setImage(gfxEntry[1],gfx.kImageUnflipped)
-	 table.insert(gfxEntry,theSprite)
-	 gfxEntry["prompt"]=prompt
-	 table.insert(retVal,gfxEntry)
-      end      
+
+      prompt = string.gsub(vv,searchExtension,"")
+      local theSprite=gfx.sprite.new()
+      gfxEntry = {gfx.image.new(tableDir .. vv)}      
+      theSprite:setImage(gfxEntry[1],gfx.kImageUnflipped)
+      table.insert(gfxEntry,theSprite)
+      gfxEntry["prompt"]=prompt
+      table.insert(retVal,gfxEntry)
+
    end
    
    -- Sort GFX table by prompt so menu displays in alpha order.
@@ -57,21 +60,25 @@ function makeGFXTable(tableDir)
 end
 
 function makeMenuImages(imageDir)
-   local fileList=playdate.file.listFiles(imageDir)
+   local fileList
    local searchExtension = "%.pdi$"
    local retVal = {}
    local kk,vv
+   local searchExtension = "%.pdi$"
+
+   if nil == string.find(imageDir,"%/$") then
+      imageDir = string.format("%s/",imageDir)
+   end
+   
+   fileList=FindFilesByWildcard(imageDir,searchExtension)
    
    for kk,vv in pairs(fileList) do
-      if nil ~= string.find(vv,searchExtension) then
 	 local key=string.gsub(vv,searchExtension,"")
 	 local theImage=gfx.image.new(imageDir .. vv)
 	 retVal[key] = theImage
-      end
    end
    
-   printTable(retVal)
-   
+   return retVal
 end
 
 --[[
