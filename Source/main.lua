@@ -319,8 +319,9 @@ function playdate.update()
       editConfigurationSetup(TopMenuTable,"Top Menu",TopMenuTable[1].prompt)
       State=StateTable.ReadingTopMenu
    elseif State == StateTable.DrawingCenterChange then
-      gfx.clear()
-      RemoveSystemMenu()
+      playdate.setMenuImage(MenuImages["CenterMenuImage"])
+      gfx.clear()      
+      RemoveSystemMenu()      
       SetupCenterChangeScreen(GameConfig["offset"])
       State = StateTable.ReadingCenterChange
    elseif State == StateTable.ReadingCenterChange then
@@ -335,6 +336,7 @@ function playdate.update()
 	 SetupSystemMenu()
       end
    elseif State == StateTable.DrawingCrankRate then
+      playdate.setMenuImage(MenuImages["CrankRateMenuImage"])
       DrawCrankRateScreen(GameConfig)
       State = StateTable.ReadingCrankRate
    elseif State == StateTable.ReadingCrankRate then

@@ -45,8 +45,6 @@ function SetupCenterChangeScreen(currentOffset)
    gfx.fillRect(limitRect)
    gfx.setColor(gfx.kColorWhite)
    gfx.drawLine(CursorLine)
-   gfx.drawText("Up/Down Change, B Reset",0,(LineAreaTop + LineAreaSize + legendHeight))
-   gfx.drawText("R/L Recenter, A Set",0,(LineAreaSize+LineAreaTop+(2*legendHeight)) )
       
 end
 
