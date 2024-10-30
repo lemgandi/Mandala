@@ -36,9 +36,9 @@ import "changeRearScale"
 
 gfx = playdate.graphics
 
-
-ImageDir = "Resources/shapes/"
-MenuImageDir = "Resources/MenuImages"
+-------------- Local Declarations -------------
+local ImageDir = "Resources/shapes/"
+local MenuImageDir = "Resources/MenuImages"
 
 _G.allFont = gfx.font.new('Resources/configFont/Roobert-20-Medium')
 
@@ -62,22 +62,19 @@ local StateTable = {
 
 local State =  StateTable.DrawingShapes
 
-function SetupSystemMenu()
-   local menu=playdate.getSystemMenu()
-   
-   menu:addMenuItem("Game Config",function() State=StateTable.DrawingTopMenu end)
-   menu:addMenuItem("Save Config",SaveOldConfiguration)
-   menu:addMenuItem("Rstore Cnfig",RestoreOldConfiguration)
+local GameConfig = {}
+local GameConfigAtStart = {}
+local OldFN = "old_data"
 
-end
+local debugPrinted=0
 
-function RemoveSystemMenu()
-   local menu = playdate.getSystemMenu()
-   menu:removeAllMenuItems()
-end
+local NilRearPrompt="Same as Front"
+
+local MenuImages
+
 
 local CurrentRotation = 1
--- local ShapeName="Line"
+
 local FrontShapeKey=nil
 local RearShapeKey=nil
 
@@ -89,15 +86,24 @@ local TopMenuTable={
    {prompt="Change Still Shape Size",nextState=StateTable.DrawingRearScale}
 }
 
-local GameConfig = {}
-local GameConfigAtStart = {}
-local OldFN = "old_data"
+--- Executable Code -------------------------------------
+-- Add choices to system menu
+function SetupSystemMenu()
+   local menu=playdate.getSystemMenu()
+   
+   menu:addMenuItem("Game Config",function() State=StateTable.DrawingTopMenu end)
+   menu:addMenuItem("Save Config",SaveOldConfiguration)
+   menu:addMenuItem("Rstore Cnfig",RestoreOldConfiguration)
+   printTable(MenuImages)
+   playdate.setMenuImage(MenuImages["MandalaMenuImage"])
 
-local debugPrinted=0
+end
 
-local NilRearPrompt="Same as Front"
-
-local MenuImages
+-- Remove all choices from system menu e.g. when in a menu already
+function RemoveSystemMenu()
+   local menu = playdate.getSystemMenu()
+   menu:removeAllMenuItems()
+end
 
 -- Add nil choice to rear shape menu
 function InsertNilChoice(shapemenu,nilprompt)
@@ -188,7 +194,8 @@ function setupMandala()
       RearShapeKey = nil
       if GameConfig["rearshape"] ~= nil then
 	 RearShapeKey = SearchTableByPrompt(GameConfig["rearshape"],MandalaGFX)
-      end      
+      end
+      SetupSystemMenu()
       State = StateTable.DrawingShapes      
    end
    
@@ -232,7 +239,6 @@ function playdate.update()
       
       
    if State == StateTable.DrawingShapes  then
-      SetupSystemMenu()
       local crankTicks=playdate.getCrankTicks(GameConfig.crankticks)
       
       if crankTicks ~= 0 then
@@ -260,6 +266,7 @@ function playdate.update()
 	       writeConfiguration(GameConfigAtStart,GameConfig)	    
 	    end
 	    drawNewMandala(FrontShapeKey)
+	    SetupSystemMenu()
 	    State = StateTable.DrawingShapes
 	 end	    
       end
@@ -332,8 +339,8 @@ function playdate.update()
 	 GameConfig["offset"] = centerPct
 	 writeConfiguration(GameConfigAtStart,GameConfig)
 	 drawNewMandala(FrontShapeKey)
+	 SetupSystemMenu()	 
 	 State = StateTable.DrawingShapes
-	 SetupSystemMenu()
       end
    elseif State == StateTable.DrawingCrankRate then
       playdate.setMenuImage(MenuImages["CrankRateMenuImage"])
@@ -346,6 +353,7 @@ function playdate.update()
 	 Debug_print("crankRate:",crankRate)
 	 GameConfig["crankticks"] = crankRate
 	 writeConfiguration(GameConfigAtStart,GameConfig)
+	 SetupSystemMenu()
 	 State = StateTable.DrawingShapes	    
       end
    elseif State == StateTable.DrawingRearScale then
@@ -364,6 +372,7 @@ function playdate.update()
 	 else	    
 	    GameConfig["rearscale"] = newScale
 	    writeConfiguration(GameConfigAtStart,GameConfig)
+	    SetupSystemMenu()
 	    State = StateTable.DrawingShapes
 	 end
       end
