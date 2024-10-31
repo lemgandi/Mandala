@@ -8,8 +8,8 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
-   sodipodi:docname="ABbuttons.svg"
-   inkscape:export-filename="Bbutton.png"
+   sodipodi:docname="2dCrank.svg"
+   inkscape:export-filename="2dCrank.png"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,7 +28,7 @@
      inkscape:document-units="px"
      showgrid="false"
      inkscape:zoom="2.7812867"
-     inkscape:cx="163.59335"
+     inkscape:cx="199.54793"
      inkscape:cy="120.0883"
      inkscape:window-width="1860"
      inkscape:window-height="1051"
@@ -63,43 +63,20 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <ellipse
-       style="fill:#f2f2f2;stroke:#000000;stroke-width:0.621978"
-       id="path235"
-       cx="17.498138"
-       cy="12.302561"
-       rx="3.8731987"
-       ry="3.6850028" />
-    <ellipse
-       style="fill:#f2f2f2;stroke:#000000;stroke-width:0.610044"
-       id="path235-3"
-       cx="16.17424"
-       cy="26.228725"
-       rx="3.5453677"
-       ry="3.8727353" />
-    <text
-       xml:space="preserve"
-       style="font-weight:bold;font-size:2.56109px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';letter-spacing:0px;word-spacing:0px;stroke-width:0.182935"
-       x="15.761928"
-       y="13.860955"
-       id="text377"
-       transform="scale(1.0511433,0.95134507)"><tspan
-         sodipodi:role="line"
-         id="tspan375"
-         style="stroke-width:0.182935"
-         x="15.761928"
-         y="13.860955">A</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-weight:bold;font-size:2.51195px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';letter-spacing:0px;word-spacing:0px;stroke-width:0.179424"
-       x="15.334088"
-       y="26.501936"
-       id="text381"
-       transform="scale(0.98099701,1.0193711)"><tspan
-         sodipodi:role="line"
-         id="tspan379"
-         style="stroke-width:0.179424"
-         x="15.334088"
-         y="26.501936">B</tspan></text>
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.899583;stroke-opacity:1"
+       id="rect235"
+       width="1.0550301"
+       height="16.420794"
+       x="11.716367"
+       y="41.392288"
+       ry="0" />
+    <rect
+       style="fill:#000000;stroke:#000000;stroke-width:0.899583;stroke-opacity:1"
+       id="rect240"
+       width="5.9318891"
+       height="2.7806702"
+       x="12.771397"
+       y="41.392288" />
   </g>
 </svg>

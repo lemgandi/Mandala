@@ -31,20 +31,11 @@ function drawShape(sh,sc)
    
 end
 
-function drawScaleScreenBackground()
-   local textHeight = _G.allFont:getHeight()
-   
-   DrawBanner("Change Still Shape Size",nil,0)
-   gfx.drawText("U/D change size,",0,textHeight)
-   gfx.drawText("L scale=1,R scale=start",0,(textHeight * 2))
-end
 
 function drawScaleScreen(cf,sh)
    
    gfx.clear()
    
-   drawScaleScreenBackground()
-
    myShape = sh
    if cf.rearscale then
       drawShape(myShape,cf.rearscale)
@@ -56,7 +47,6 @@ end
 
 function redrawShape(shape,scale)
    gfx.clear()
-   drawScaleScreenBackground()
    drawShape(shape,scale)
 end
 

@@ -94,7 +94,7 @@ function SetupSystemMenu()
    menu:addMenuItem("Game Config",function() State=StateTable.DrawingTopMenu end)
    menu:addMenuItem("Save Config",SaveOldConfiguration)
    menu:addMenuItem("Rstore Cnfig",RestoreOldConfiguration)
-   printTable(MenuImages)
+
    playdate.setMenuImage(MenuImages["MandalaMenuImage"])
 
 end
@@ -275,9 +275,10 @@ function playdate.update()
       chosenPrompt = editConfiguration()
       if (chosenPrompt ~= nil) then
 	 if chosenPrompt == playdate.kButtonB then
+	    SetupSystemMenu()
 	    State=StateTable.DrawingShapes
 	 else	       
-	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)
+	    local menuChoice=SearchTableByPrompt(chosenPrompt,TopMenuTable)	    
 	    State=TopMenuTable[menuChoice].nextState
 	 end
       end	 
@@ -357,6 +358,7 @@ function playdate.update()
 	 State = StateTable.DrawingShapes	    
       end
    elseif State == StateTable.DrawingRearScale then
+      playdate.setMenuImage(MenuImages["RearScaleMenuImage"])
       local scaleShape = MandalaGFX[FrontShapeKey][1]
       if RearShapeKey then
 	 scaleShape = MandalaGFX[RearShapeKey][1]
