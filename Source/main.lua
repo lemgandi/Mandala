@@ -320,6 +320,7 @@ function playdate.update()
 	    State=StateTable.DrawingShapes
 	 end
       end
+      SetupSystemMenu()
    elseif State == StateTable.DrawingTopMenu then
       playdate.setMenuImage(MenuImages["TopMenuImage"])
       gfx.clear()
