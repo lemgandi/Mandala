@@ -1,0 +1,22 @@
+Make Playdate Video
+
+5 Nov 2024
+
+
+1. Start playdate simulator:
+
+    /home/devel/PlaydateSDK/bin/PlaydateSimulator Mandala.pdx
+2. Start SimpleScreenRecorder from icon or:
+   simplescreenrecorder
+
+3. Choose rectangle on simulator.
+
+4. Choose filename, Start Recording, make simulator go
+
+5. Pause Recording
+
+6. convert
+   convert_to_gif fn.mkv
+
+7. Check gif in browser
+
